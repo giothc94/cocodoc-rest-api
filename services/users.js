@@ -15,14 +15,7 @@ module.exports.User = class User {
 }
 
 class UsersServices {
-    docUser = {
-        cedula: String,
-        pNombre: String,
-        sNombre: String,
-        pApellido: String,
-        sApellido: String,
-        idRol: Number
-    }
+
     constructor() {
         this.collection = 'users'
         this.mongodb = new MongoLib()
