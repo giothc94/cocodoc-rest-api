@@ -4,13 +4,15 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var fileUpload = require('express-fileupload')
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-var DocsApiRouter = require('./routes/api/docs')
 var UsersApiRouter = require('./routes/api/users')
 var FolderApiRouter = require('./routes/api/directories')
 var RolesApiRouter = require('./routes/api/roles')
+var FilesApiRouter = require('./routes/api/files')
 
 var app = express();
 
@@ -22,6 +24,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(fileUpload())
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -33,10 +36,10 @@ app.use(function(req, res, next) {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.use('/api/docs', DocsApiRouter)
 app.use('/api/users', UsersApiRouter)
 app.use('/api/directories', FolderApiRouter)
 app.use('/api/roles', RolesApiRouter)
+app.use('/api/files', FilesApiRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -51,7 +54,10 @@ app.use(function(err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    // res.render('error');
+    res.json({
+        error: err
+    })
 });
 
 module.exports = app;

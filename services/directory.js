@@ -1,45 +1,52 @@
-const { CreateFolder, GetDirectory, RemoveFolder, RenameFolder } = require('../lib/fileSystem')
+const { FileSystem } = require("../lib/fileSystem");
+const { VerifyFolder } = require("../utils/schemas/verifyFolder");
 
 class FileSystemService {
-
-    constructor() {}
-    async createFolder(path) {
-        return await CreateFolder(path)
-            .then(response => {
-                return response
-            })
-            .catch(error => {
-                return error
-            })
+    constructor() {
+        this.FileSystem = new FileSystem();
+        this.VerifyFolder = new VerifyFolder();
     }
 
-    async getDirectory(path) {
-        return await GetDirectory(path)
-            .then(response => {
-                return response
-            })
-            .catch(error => {
-                return error
-            })
-    }
-    async removeFolder(path, options) {
-        return await RemoveFolder(path, options)
-            .then(response => {
-                return response
-            })
-            .catch(error => {
-                return error
-            })
-    }
-    async renameFolder(oldPath, newPath) {
-        return await RenameFolder(oldPath, newPath)
-            .then(response => {
-                return response
-            })
-            .catch(error => {
-                return error
-            })
-    }
+    createFolder = body => {
+        return new Promise((resolve, reject) => {
+            this.VerifyFolder.verifyFolderForCreate(body)
+                .then(({ data }) => {
+                    this.FileSystem.createFolderAndPath(data)
+                        .then(response => resolve(response))
+                        .catch(error => reject(error));
+                })
+                .catch(error => reject({ error: error.error[0].message, status: 400 }));
+        });
+    };
+    getDirectory = () => {
+        return new Promise((resolve, reject) => {
+            this.FileSystem.getDirectory()
+                .then(response => resolve(response))
+                .catch(error => reject(error));
+        });
+    };
+    removeFolder = body => {
+        return new Promise((resolve, reject) => {
+            this.VerifyFolder.verifyIdFolderSchema(body)
+                .then(({ data }) => {
+                    this.FileSystem.deleteFolderAndPath(data)
+                        .then(response => resolve(response))
+                        .catch(error => reject(error));
+                })
+                .catch(error => reject({ error: error.error[0].message, status: 400 }));
+        });
+    };
+    renameFolder = body => {
+        return new Promise((resolve, reject) => {
+            this.VerifyFolder.verifyFolderForUpdate(body)
+                .then(({ data }) => {
+                    this.FileSystem.renameFolderAndPath(data)
+                        .then(response => resolve(response))
+                        .catch(error => reject(error));
+                })
+                .catch(error => reject({ error: error.error[0].message, status: 400 }));
+        });
+    };
 }
 
-module.exports = FileSystemService
+module.exports.FileSystemService = FileSystemService;

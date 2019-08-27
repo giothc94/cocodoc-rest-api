@@ -1,15 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const UsersServices = require('../../services/users');
+const { UsersServices } = require('../../services/users');
 
-router.get('/', async function(req, res) {
-    su = new UsersServices();
-    const roles = await su.getRoles()
-    console.log(roles)
-    res.status(200).json({
-        data: roles,
-        message: 'Lista de roles'
-    })
+router.get('/', async function(req, res, next) {
+    let su = new UsersServices();
+    su.getRoles()
+        .then(resp => {
+            res.status(200).json({
+                response: resp,
+                message: 'Lista de roles',
+                ok: true,
+                status: 200,
+                statusText: "Ok"
+            })
+        })
+        .catch(next)
 });
 
 module.exports = router;

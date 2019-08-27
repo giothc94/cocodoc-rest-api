@@ -1,92 +1,72 @@
-const MongoLib = require('../lib/mongo')
-const { mysqlCon } = require('../lib/mysql');
-const { getRoles, getUsers, create, getUser, deleteUser, updateUser } = require('../lib/queries/mysql/users/mysql');
-const { createDocumentForUser } = require('../lib/queries/mongodb/users/mongo');
-
-module.exports.User = class User {
-    constructor(cedula, pNombre, sNombre, pApellido, sApellido, idRol) {
-        this.cedula = cedula
-        this.pNombre = pNombre
-        this.sNombre = sNombre
-        this.pApellido = pApellido
-        this.sApellido = sApellido
-        this.idRol = idRol
-    }
-}
+// const MongoLib = require('../lib/mongo')
+const { UsersCocodoc } = require("../lib/dao/userCocodocDao");
+const { VerifyUser } = require("../utils/schemas/verifyUser");
 
 class UsersServices {
-
     constructor() {
-        this.collection = 'users'
-        this.mongodb = new MongoLib()
+        // this.collection = 'users'
+        // this.mongodb = new MongoLib()
     }
 
-    async createUser(user) {
-        const { cedula, pNombre, sNombre, pApellido, sApellido, idRol } = user || null
-        if (cedula && pNombre && sNombre && pApellido && sApellido && idRol) {
-            return await create(user)
-                .then(response => {
-                    createDocumentForUser(this.collection, user)
-                    return response
+    createUser = user => {
+        return new Promise((resolve, reject) => {
+            let vs = new VerifyUser();
+            let us = new UsersCocodoc();
+            vs.verifyUserForCreate(user)
+                .then(({ user }) => {
+                    us.createUserCocodoc(user)
+                        .then(resp => resolve(resp))
+                        .catch(error => reject(error));
                 })
-                .catch(err => {
-                    return err
-                })
-        } else {
-            return { message: 'Los campos del usuaio son incorrectos. Campos correctos { cedula:string, pNombre:string, sNombre:string, pApellido:string, sApellido:string, idRol:int }' }
-        }
-    }
+                .catch(error => reject({ error: error.error[0].message, status: 400 }));
+        });
+    };
 
-    async getRoles() {
-        return await getRoles()
-            .then(roles => {
-                return roles
-            })
-            .catch(err => {
-                return err
-            })
-    }
-    async getUsers() {
-        return await getUsers()
-            .then(users => {
-                return users
-            })
-            .catch(err => {
-                return err
-            })
-    }
-    async getUser(id) {
-        return await getUser(id)
-            .then(user => {
-                return user[0]
-            })
-            .catch(err => {
-                return err
-            })
-    }
-    async deleteUser(id) {
-        return await deleteUser(id)
-            .then(message => {
-                return message
-            })
-            .catch(err => {
-                return err
-            })
-    }
-    async updateUser(user) {
-        const { id, cedula, pNombre, sNombre, pApellido, sApellido, idRol } = user || null
-        if (id && cedula && pNombre && sNombre && pApellido && sApellido && idRol) {
-            return await updateUser(user)
-                .then(response => {
-                    return response
+    getRoles = async() => {
+        return new Promise(async(resolve, reject) => {
+            let us = new UsersCocodoc();
+            us.getRolesUsersCocodoc()
+                .then(roles => resolve(roles))
+                .catch(err => reject(err));
+        });
+    };
+    getUsers = async() => {
+        return new Promise(async(resolve, reject) => {
+            let us = new UsersCocodoc();
+            us.getUsersCocodoc()
+                .then(users => resolve(users))
+                .catch(err => reject(err));
+        });
+    };
+    getUser = id => {
+        return new Promise((resolve, reject) => {
+            let us = new UsersCocodoc();
+            us.getUserCocodoc(id)
+                .then(user => { resolve(user[0]) })
+                .catch(err => reject(err));
+        });
+    };
+    deleteUser = id => {
+        return new Promise((resolve, reject) => {
+            let us = new UsersCocodoc();
+            us.deleteUserCocodoc(id)
+                .then(message => resolve(message))
+                .catch(err => reject(err));
+        });
+    };
+    updateUser = user => {
+        return new Promise((resolve, reject) => {
+            let us = new UsersCocodoc();
+            let vs = new VerifyUser();
+            vs.verifyUserForUpdate(user)
+                .then(({ user }) => {
+                    us.updateUserCocodoc(user)
+                        .then(resp => resolve(resp))
+                        .catch(error => reject(error));
                 })
-                .catch(err => {
-                    return err
-                })
-        } else {
-            return { message: 'Los campos del usuaio son incorrectos. Campos correctos { id:int, cedula:string, pNombre:string, sNombre:string, pApellido:string, sApellido:string, idRol:int }' }
-        }
-    }
+                .catch(error => reject({ error: error.error[0].message, status: 400 }));
+        });
+    };
 }
 
-module.exports = UsersServices;
+module.exports.UsersServices = UsersServices;

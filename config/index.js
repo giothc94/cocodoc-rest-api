@@ -14,6 +14,16 @@ const config = {
     mysqlPassword: process.env.MYSQL_PASSWORD,
     mysqlDatabase: process.env.MYSQL_DATABASE,
     //FileSystem
-    dirRoot: process.env.ROOT
+    dirRoot: process.env.ROOT,
+    tempImg: process.env.TEMP_IMG,
+    //users
+    defaultAdminPassword: process.env.DEFAULT_ADMIN_PASSWORD,
+    defaultUserPassword: process.env.DEFAULT_USER_PASSWORD,
+    // auth
+    authJwtSecret: process.env.AUTH_JWT_SECRET,
+    // api keys
+    publicApiKeyToken: process.env.PUBLIC_API_KEY_TOKEN,
+    adminApiKeyToken: process.env.ADMIN_API_KEY_TOKEN
+
 }
 module.exports = { config };
