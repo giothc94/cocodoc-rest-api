@@ -10,15 +10,10 @@ class UsersServices {
 
     createUser = user => {
         return new Promise((resolve, reject) => {
-            let vs = new VerifyUser();
             let us = new UsersCocodoc();
-            vs.verifyUserForCreate(user)
-                .then(({ user }) => {
-                    us.createUserCocodoc(user)
-                        .then(resp => resolve(resp))
-                        .catch(error => reject(error));
-                })
-                .catch(error => reject({ error: error.error[0].message, status: 400 }));
+            us.createUserCocodoc(user)
+                .then(resp => resolve(resp))
+                .catch(error => reject({ error: error, status: 400 }));
         });
     };
 
@@ -57,14 +52,9 @@ class UsersServices {
     updateUser = user => {
         return new Promise((resolve, reject) => {
             let us = new UsersCocodoc();
-            let vs = new VerifyUser();
-            vs.verifyUserForUpdate(user)
-                .then(({ user }) => {
-                    us.updateUserCocodoc(user)
-                        .then(resp => resolve(resp))
-                        .catch(error => reject(error));
-                })
-                .catch(error => reject({ error: error.error[0].message, status: 400 }));
+            us.updateUserCocodoc(user)
+                .then(resp => resolve(resp))
+                .catch(error => reject({ error: error, status: 400 }));
         });
     };
 }

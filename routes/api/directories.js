@@ -1,6 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const { FileSystemService } = require("../../services/directory");
+const validationHandler = require("../../utils/middleware/validationHandler");
+const {
+    _folderCreateSchema,
+    _folderIdSchemaSchema,
+    _folderUpdateSchema
+} = require("../../utils/schemas/verifyFolder");
 
 router
     .get("/", async function(req, res, next) {
@@ -18,7 +24,7 @@ router
             })
             .catch(next);
     })
-    .post("/", async function(req, res, next) {
+    .post("/", validationHandler(_folderCreateSchema), async function(req, res, next) {
         const { body } = req;
         let fss = new FileSystemService();
         fss
@@ -34,7 +40,7 @@ router
             })
             .catch(next);
     })
-    .put("/", async function(req, res, next) {
+    .put("/", validationHandler(_folderUpdateSchema), async function(req, res, next) {
         const { body } = req;
         let fss = new FileSystemService();
         fss
@@ -50,7 +56,7 @@ router
             })
             .catch(next);
     })
-    .delete("/", async(req, res, next) => {
+    .delete("/", validationHandler(_folderIdSchemaSchema), async(req, res, next) => {
         const { body } = req;
         let fss = new FileSystemService();
         fss

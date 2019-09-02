@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { UsersServices } = require('../../services/users');
+const validationHandler = require('../../utils/middleware/validationHandler');
+const { _UserCreateSchema, _UserUpdateSchema, _UserIdSchema } = require('../../utils/schemas/verifyUser');
 
 
 router
@@ -18,7 +20,7 @@ router
             })
             .catch(next)
     })
-    .get('/:id', function(req, res, next) {
+    .get('/:id', validationHandler(_UserIdSchema, 'params'), function(req, res, next) {
         let su = new UsersServices();
         const { params: { id } } = req
         su.getUser(id)
@@ -33,7 +35,7 @@ router
             })
             .catch(next)
     })
-    .post('/', function(req, res, next) {
+    .post('/', validationHandler(_UserCreateSchema), function(req, res, next) {
         const { body } = req
         let su = new UsersServices();
         su.createUser(body)
@@ -48,7 +50,7 @@ router
             })
             .catch(next)
     })
-    .put('/', function(req, res, next) {
+    .put('/', validationHandler(_UserUpdateSchema), function(req, res, next) {
         const { body } = req
         let su = new UsersServices();
         su.updateUser(body)
@@ -63,7 +65,7 @@ router
             })
             .catch(next)
     })
-    .delete('/:id', (req, res, next) => {
+    .delete('/:id', validationHandler(_UserIdSchema, 'params'), (req, res, next) => {
         const { params: { id } } = req
         let su = new UsersServices();
         su.deleteUser(id)
