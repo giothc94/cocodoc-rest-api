@@ -64,4 +64,4 @@ typings/
 # .env config
 .env
 # STORAGE
-/public/documentos
+/public/documentos 
