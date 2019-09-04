@@ -21,6 +21,7 @@ const config = {
     defaultUserPassword: process.env.DEFAULT_USER_PASSWORD,
     // auth
     authJwtSecret: process.env.AUTH_JWT_SECRET,
+    authUserKeySecret: process.env.AUTH_USER_KEY_SECRET,
     // api keys
     publicApiKeyToken: process.env.PUBLIC_API_KEY_TOKEN,
     adminApiKeyToken: process.env.ADMIN_API_KEY_TOKEN

@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { UsersServices } = require('../../services/users');
+const { RolesServices } = require('../../services/roles');
 
 router.get('/', async function(req, res, next) {
-    let su = new UsersServices();
-    su.getRoles()
+    let rs = new RolesServices();
+    rs.getRoles()
         .then(resp => {
             res.status(200).json({
                 response: resp,

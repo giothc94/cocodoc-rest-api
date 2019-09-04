@@ -13,6 +13,7 @@ var UsersApiRouter = require('./routes/api/users')
 var FolderApiRouter = require('./routes/api/directories')
 var RolesApiRouter = require('./routes/api/roles')
 var FilesApiRouter = require('./routes/api/files')
+var AuthApiRouter = require('./routes/api/auth')
 
 var app = express();
 
@@ -32,10 +33,12 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+require('./utils/auth/strategies/basic')
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+app.use('/api/auth', AuthApiRouter)
 app.use('/api/users', UsersApiRouter)
 app.use('/api/directories', FolderApiRouter)
 app.use('/api/roles', RolesApiRouter)

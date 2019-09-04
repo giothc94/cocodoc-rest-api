@@ -17,14 +17,6 @@ class UsersServices {
         });
     };
 
-    getRoles = async() => {
-        return new Promise(async(resolve, reject) => {
-            let us = new UsersCocodoc();
-            us.getRolesUsersCocodoc()
-                .then(roles => resolve(roles))
-                .catch(err => reject(err));
-        });
-    };
     getUsers = async() => {
         return new Promise(async(resolve, reject) => {
             let us = new UsersCocodoc();
