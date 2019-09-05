@@ -33,7 +33,12 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+
+// Basic strategy
 require('./utils/auth/strategies/basic')
+
+// JWT strategy
+require('./utils/auth/strategies/jwt')
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

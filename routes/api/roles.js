@@ -1,20 +1,25 @@
-const express = require('express');
+const passport = require("passport");
+const express = require("express");
 const router = express.Router();
-const { RolesServices } = require('../../services/roles');
+const { RolesServices } = require("../../services/roles");
 
-router.get('/', async function(req, res, next) {
-    let rs = new RolesServices();
-    rs.getRoles()
-        .then(resp => {
-            res.status(200).json({
-                response: resp,
-                message: 'Lista de roles',
-                ok: true,
-                status: 200,
-                statusText: "Ok"
+router.get(
+    "/",
+    passport.authenticate("jwt", { session: false }),
+    async function(req, res, next) {
+        let rs = new RolesServices();
+        rs.getRoles()
+            .then(resp => {
+                res.status(200).json({
+                    response: resp,
+                    message: "Lista de roles",
+                    ok: true,
+                    status: 200,
+                    statusText: "Ok"
+                });
             })
-        })
-        .catch(next)
-});
+            .catch(next);
+    }
+);
 
 module.exports = router;
