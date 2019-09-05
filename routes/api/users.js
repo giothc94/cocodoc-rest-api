@@ -102,7 +102,7 @@ router
             su.deleteUser(id)
                 .then(resp => {
                     res.status(200).json({
-                        response: resp,
+                        'Usuario eliminado': Boolean(resp),
                         ok: true,
                         status: 200,
                         statusText: "Ok"

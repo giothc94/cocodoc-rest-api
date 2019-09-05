@@ -11,7 +11,7 @@ passport.use(
         const rolesService = new RolesServices();
         try {
             const user = await userService.verifyUser({ user: usr, password: passw });
-            const userKeyToken = jwt.sign(user.ID, config.authUserKeySecret);
+            const userKeyToken = await jwt.sign(user.ID, config.authUserKeySecret);
             const { key } = await rolesService.getKeyRol(user.ID_ROL);
             const scopes = await rolesService.getRolAndScopesByKey(key);
 

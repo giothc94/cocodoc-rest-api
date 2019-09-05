@@ -16,7 +16,6 @@ router
         next
     ) {
         let fss = new FileSystemService();
-        console.log("directories");
         fss
             .getDirectory()
             .then(directory => {

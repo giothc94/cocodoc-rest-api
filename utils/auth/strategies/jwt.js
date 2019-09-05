@@ -11,13 +11,10 @@ passport.use(
         },
         async(tokenPayload, cb) => {
             const usersService = new UsersServices();
-            const userId = jwt.verify(
-                tokenPayload.sub,
-                config.authUserKeySecret
-            );
+            const userId = jwt.verify(tokenPayload.sub, config.authUserKeySecret);
             try {
                 const user = await usersService.getUser(userId);
-                cb(null, {...user, scopes: tokenPayload.scopes });
+                cb(null, {...user, SCOPES: tokenPayload.scopes });
             } catch (error) {
                 return cb({ error: { message: "no autorizado", status: 401 } });
             }
