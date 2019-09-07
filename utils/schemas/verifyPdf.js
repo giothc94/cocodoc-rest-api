@@ -1,33 +1,7 @@
 const Joi = require("@hapi/joi");
-/**
-     * Lista de parametros para mysql
-     
-     * `id_documents`,
-     * `name_doc`,
-     * `registration_date_doc`,
-     * `last_modification_doc`,
-     * `id_folder`
-     *
-     * /
-
-    /**
-     * Lista de parametros que se debe recibir para crear pdf
-     * title
-     * subject
-     * coment
-     * brodcastDate
-     * receptionDate
-     * keywords
-     * idFolder
-     * segment
-     * issuingEntity
-     * receivingEntity
-     * numberOfSheets
-     * numberOfSheetsOriginalDocument
-     * responsibleObservation
-     * documentsFiles
-     * images
-     */
+const _idDocument = Joi.string()
+    .regex(/^[0-9]{10,50}$/)
+    .required();
 
 const _pdfRecord = {
     idDocuments: Joi.string()
@@ -49,7 +23,7 @@ const _pdfCreate = {
     subject: Joi.string()
         .regex(/^[a-z ]{2,50}$/)
         .required(),
-    coment: Joi.string()
+    comment: Joi.string()
         .regex(/^[a-z ]{2,50}$/)
         .required(),
     broadcastDate: Joi.date().required(),
@@ -77,14 +51,6 @@ const _pdfCreate = {
         .regex(/^[a-zA-Z ]{2,50}$/)
         .max(50)
         .truncate()
-        .required(),
-    documentsFiles: Joi.array()
-        .items(Joi.string())
-        .required(),
-    idUser: Joi.number()
-        .integer()
-        .positive()
-        .required()
 };
 
 const _pdfData = {
@@ -94,7 +60,7 @@ const _pdfData = {
     subject: Joi.string()
         .regex(/^[a-z ]{2,50}$/)
         .required(),
-    coment: Joi.string()
+    comment: Joi.string()
         .regex(/^[a-z ]{2,50}$/)
         .required(),
     broadcastDate: Joi.date().required(),
@@ -138,4 +104,4 @@ const _pdfData = {
         .required()
 };
 
-module.exports = { _pdfRecord, _pdfCreate, _pdfData };
+module.exports = { _pdfRecord, _pdfCreate, _pdfData, _idDocument };
