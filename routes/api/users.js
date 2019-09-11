@@ -10,41 +10,61 @@ const {
 
 const router = express.Router();
 router
-    .get("/", passport.authenticate("jwt", { session: false }), function(
-        req,
-        res,
-        next
-    ) {
-        let us = new UsersServices();
-        us.getUsers()
-            .then(users => {
-                res.status(200).json({
-                    data: users,
-                    message: "Lista de usuarios",
-                    ok: true,
-                    status: 200,
-                    statusText: "Ok"
-                });
-            })
-            .catch(next);
-    })
+    .get(
+        "/",
+        passport.authenticate("jwt", { session: false }), // prettier-ignore
+        (req, res, next) => {
+            let us = new UsersServices();
+            us.getUsers()
+                .then(users => {
+                    res.status(200).json({
+                        Message: "Lista de usuarios",
+                        ListUsers: users,
+                        Ok: true,
+                        Status: 200,
+                        StatusText: "Ok"
+                    });
+                })
+                .catch(next);
+        }
+    )
     .get(
         "/:id",
         passport.authenticate("jwt", { session: false }),
         validationHandler(_UserIdSchema, "params"),
-        function(req, res, next) {
+        (req, res, next) => {
             let su = new UsersServices();
             const {
                 params: { id }
             } = req;
             su.getUser(id)
                 .then(user => {
+                    const {
+                        CEDULA,
+                        PRIMER_NOMBRE,
+                        SEGUNDO_NOMBRE,
+                        PRIMER_APELLIDO,
+                        SEGUNDO_APELLIDO,
+                        ID,
+                        ID_ROL
+                    } = user;
+                    user = {
+                        Cedula: CEDULA,
+                        PrimerNombre: PRIMER_NOMBRE,
+                        SegundoNombre: SEGUNDO_NOMBRE,
+                        PrimerApellido: PRIMER_APELLIDO,
+                        SegundoApellido: SEGUNDO_APELLIDO,
+                        Id: ID,
+                        IdRol: ID_ROL
+                    };
                     res.status(200).json({
-                        data: user,
-                        message: "Usuario obtenido",
-                        ok: true,
-                        status: 200,
-                        statusText: "Ok"
+                        User: user,
+                        Response: {
+                            Message: "Usuario obtenido",
+                            Ok: true,
+                            Status: 200,
+                            Statustext: "Ok"
+                        }
                     });
                 })
                 .catch(next);
@@ -54,17 +74,17 @@ router
         "/",
         passport.authenticate("jwt", { session: false }),
         validationHandler(_UserCreateSchema),
-        function(req, res, next) {
+        (req, res, next) => {
             const { body } = req;
             let su = new UsersServices();
             su.createUser(body)
                 .then(resp => {
                     res.status(201).json({
-                        data: resp,
-                        message: "Usuario creado",
-                        ok: true,
-                        status: 201,
-                        statusText: "Created"
+                        User: resp,
+                        Message: "Usuario creado",
+                        Ok: true,
+                        Status: 201,
+                        Statustext: "Created"
                     });
                 })
                 .catch(next);
@@ -74,17 +94,17 @@ router
         "/",
         passport.authenticate("jwt", { session: false }),
         validationHandler(_UserUpdateSchema),
-        function(req, res, next) {
+        (req, res, next) => {
             const { body } = req;
             let su = new UsersServices();
             su.updateUser(body)
                 .then(resp => {
                     res.status(200).json({
-                        data: resp,
-                        message: "Usuario modificado",
-                        ok: true,
-                        status: 200,
-                        statusText: "Created"
+                        User: resp,
+                        Message: "Usuario modificado",
+                        Ok: true,
+                        Status: 200,
+                        StatusText: "Created"
                     });
                 })
                 .catch(next);
@@ -102,10 +122,10 @@ router
             su.deleteUser(id)
                 .then(resp => {
                     res.status(200).json({
-                        'Usuario eliminado': Boolean(resp),
-                        ok: true,
-                        status: 200,
-                        statusText: "Ok"
+                        "UsuarioEliminado": Boolean(resp),
+                        Ok: true,
+                        Status: 200,
+                        StatusText: "Ok"
                     });
                 })
                 .catch(next);

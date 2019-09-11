@@ -15,9 +15,9 @@ const validationPdfHandler = (
 ) => {
     return (req, res, next) => {
         if (!req[checkData] || !req[checkFiles]) {
-            next({ message: "bad request", status: 400 });
+            next({ message: "se requiere body y files en el request", status: 400 });
         } else if (!req[checkFiles].images) {
-            next({ message: "files.images is required", status: 400 });
+            next({ message: "files.images es requerido", status: 400 });
         } else {
             var listImgs = [];
             if (Array.isArray(req[checkFiles].images)) {
