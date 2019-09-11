@@ -13,7 +13,7 @@ router
         "/",
         passport.authenticate('jwt', { session: false }), // prettier-ignore
         validationPdfHandler(_pdfCreate),
-        async function(req, res, next) {
+        async(req, res, next) => {
             const { body } = req;
             const {
                 user: {
@@ -48,7 +48,7 @@ router
         "/:id",
         passport.authenticate('jwt', { session: false }), // prettier-ignore
         validationIdPdf(_idDocument), //prettier-ignore 
-        async function(req, res, next) {
+        async(req, res, next) => {
             const { params: { id } } = req
             const pdf = new DocumentsService();
             pdf.getPdf(id)

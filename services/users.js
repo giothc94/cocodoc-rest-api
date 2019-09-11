@@ -13,7 +13,7 @@ class UsersServices {
             let us = new UsersCocodoc();
             us.createUserCocodoc(user)
                 .then(resp => resolve(resp))
-                .catch(error => reject({ error: error, status: 400 }));
+                .catch(error => reject({...error }));
         });
     };
 
@@ -29,7 +29,7 @@ class UsersServices {
         return new Promise((resolve, reject) => {
             let us = new UsersCocodoc();
             us.getUserCocodoc(id)
-                .then(user => { resolve(user[0]) })
+                .then(user => resolve(user[0]))
                 .catch(err => reject(err));
         });
     };
@@ -46,7 +46,7 @@ class UsersServices {
             let us = new UsersCocodoc();
             us.updateUserCocodoc(user)
                 .then(resp => resolve(resp))
-                .catch(error => reject({ error: error, status: 400 }));
+                .catch(error => reject({...error }));
         });
     };
 }

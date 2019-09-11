@@ -10,30 +10,30 @@ const {
 } = require("../../utils/schemas/verifyFolder");
 
 router
-    .get("/", passport.authenticate("jwt", { session: false }), async function(
-        req,
-        res,
-        next
-    ) {
-        let fss = new FileSystemService();
-        fss
-            .getDirectory()
-            .then(directory => {
-                res.status(200).json({
-                    data: directory,
-                    message: "Directorio de Cocodoc",
-                    ok: true,
-                    status: 200,
-                    statusText: "Ok"
-                });
-            })
-            .catch(next);
-    })
+    .get(
+        "/",
+        passport.authenticate("jwt", { session: false }),
+        async(req, res, next) => {
+            let fss = new FileSystemService();
+            fss
+                .getDirectory()
+                .then(directory => {
+                    res.status(200).json({
+                        data: directory,
+                        message: "Directorio de Cocodoc",
+                        ok: true,
+                        status: 200,
+                        statusText: "Ok"
+                    });
+                })
+                .catch(next);
+        }
+    )
     .post(
         "/",
         passport.authenticate("jwt", { session: false }),
         validationHandler(_folderCreateSchema),
-        async function(req, res, next) {
+        async(req, res, next) => {
             const { body } = req;
             let fss = new FileSystemService();
             fss
@@ -54,7 +54,7 @@ router
         "/",
         passport.authenticate("jwt", { session: false }),
         validationHandler(_folderUpdateSchema),
-        async function(req, res, next) {
+        async(req, res, next) => {
             const { body } = req;
             let fss = new FileSystemService();
             fss
