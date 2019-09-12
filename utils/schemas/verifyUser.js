@@ -7,6 +7,14 @@ const _UserIdSchema = {
         .required()
 };
 
+const _UpdateUserPassword = {
+    newPassword: Joi.string()
+        .min(8)
+        .max(20)
+        .regex(/^[0-9A-Za-z]{8,20}$/)
+        .required()
+};
+
 const _UserCreateSchema = {
     cedula: Joi.string()
         .min(10)
@@ -66,4 +74,4 @@ const _UserUpdateSchema = {
         .required()
 };
 
-module.exports = { _UserCreateSchema, _UserUpdateSchema, _UserIdSchema };
+module.exports = { _UserCreateSchema, _UserUpdateSchema, _UserIdSchema, _UpdateUserPassword };

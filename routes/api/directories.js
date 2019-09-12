@@ -81,7 +81,7 @@ router
             fss
                 .removeFolder(body)
                 .then(resp => {
-                    res.status(201).json({
+                    res.status(200).json({
                         data: resp,
                         message: "Carpeta eliminada",
                         ok: true,

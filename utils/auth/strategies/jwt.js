@@ -22,12 +22,16 @@ passport.use(
                 state = Boolean(state);
                 expiresIn = new Date(tokenPayload.expiresIn);
                 user.TOKEN_EXPIRATION_DATE = new Date(user.TOKEN_EXPIRATION_DATE);
+                user.IS_NEW = Boolean(user.IS_NEW);
+                if (user.IS_NEW) {
+                    return cb({ message: "requiere cambio de contraseña, no puede acceder hasta que su contraseña sea cambiada", status: 401 });
+                }
                 if (
                     state &&
                     expiresIn.getMinutes() === user.TOKEN_EXPIRATION_DATE.getMinutes() &&
                     expiresIn.getHours() === user.TOKEN_EXPIRATION_DATE.getHours()
                 ) {
-                    cb(null, {...user, SCOPES: tokenPayload.scopes });
+                    return cb(null, {...user, SCOPES: tokenPayload.scopes });
                 } else {
                     return cb({ message: "no autorizado", status: 401 });
                 }

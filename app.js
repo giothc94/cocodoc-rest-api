@@ -14,6 +14,7 @@ var FolderApiRouter = require('./routes/api/directories')
 var RolesApiRouter = require('./routes/api/roles')
 var FilesApiRouter = require('./routes/api/files')
 var AuthApiRouter = require('./routes/api/auth')
+var ChangePassword = require('./routes/api/changePassword')
 
 var app = express();
 
@@ -39,6 +40,8 @@ require('./utils/auth/strategies/basic')
 
 // JWT strategy
 require('./utils/auth/strategies/jwt')
+    // Custom Strategy
+require('./utils/auth/strategies/custom')
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -48,6 +51,7 @@ app.use('/api/users', UsersApiRouter)
 app.use('/api/directories', FolderApiRouter)
 app.use('/api/roles', RolesApiRouter)
 app.use('/api/files', FilesApiRouter)
+app.use('/api/change-password', ChangePassword)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

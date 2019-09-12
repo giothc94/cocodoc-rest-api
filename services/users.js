@@ -49,6 +49,14 @@ class UsersServices {
                 .catch(error => reject({...error }));
         });
     };
+    updatePasswordUser = ({ idKey, newPassword }) => {
+        return new Promise((resolve, reject) => {
+            let us = new UsersCocodoc();
+            us.updatePasswordUser({ idKey: idKey, newPassword: newPassword })
+                .then(resp => resolve(resp))
+                .catch(error => reject(error))
+        })
+    }
 }
 
 module.exports.UsersServices = UsersServices;
