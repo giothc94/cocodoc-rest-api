@@ -43,7 +43,7 @@ passport.use(
             user.IS_NEW = Boolean(user.IS_NEW);
             const userKeyToken = await jwt.sign(user.ID, config.authUserKeySecret);
             const { key } = await rolesService.getKeyRol(user.ID_ROL);
-            const scopes = await rolesService.getRolAndScopesByKey(key);
+            const { scopes } = await rolesService.getRolAndScopesByKey(key);
 
             const payload = {
                 sub: userKeyToken,
