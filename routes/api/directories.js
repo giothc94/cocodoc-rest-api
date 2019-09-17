@@ -3,6 +3,7 @@ const passport = require("passport");
 const router = express.Router();
 const { FileSystemService } = require("../../services/directory");
 const validationHandler = require("../../utils/middleware/validationHandler");
+const scopesValidationHandler = require('../../utils/middleware/scopesValidationHandler')
 const {
     _folderCreateSchema,
     _folderIdSchemaSchema,
@@ -13,6 +14,7 @@ router
     .get(
         "/",
         passport.authenticate("jwt", { session: false }),
+        // scopesValidationHandler(''),
         async(req, res, next) => {
             let fss = new FileSystemService();
             fss

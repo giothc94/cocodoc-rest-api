@@ -4,11 +4,16 @@ const {
     validationIdPdf,
     validationParamsPdf
 } = require("../../utils/middleware/validationPdfHandler");
-const { _pdfCreate, _idDocument, _documentQuery } = require("../../utils/schemas/verifyPdf");
+const {
+    _pdfCreate,
+    _idDocument,
+    _documentQuery
+} = require("../../utils/schemas/verifyPdf");
 const passport = require("passport");
 const fs = require("fs");
 const router = express.Router();
 const { DocumentsService } = require("../../services/documents");
+
 router
     .post(
         "/",
@@ -83,6 +88,28 @@ router
                     res.status(200).json({
                         Match: resp,
                         Message: "Resultado de busqueda",
+                        Ok: true,
+                        Status: 200,
+                        StatusText: "Ok"
+                    });
+                })
+                .catch(next);
+        }
+    )
+    .delete(
+        "/:id",
+        passport.authenticate('jwt', { session: false }), // prettier-ignore
+        validationIdPdf(_idDocument), //prettier-ignore
+        async(req, res, next) => {
+            const {
+                params: { id }
+            } = req;
+            const pdf = new DocumentsService();
+            pdf
+                .deletePdf(id)
+                .then(resp => {
+                    res.status(200).json({
+                        Message: "Documento eliminado",
                         Ok: true,
                         Status: 200,
                         StatusText: "Ok"

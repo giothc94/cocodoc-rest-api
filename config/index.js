@@ -8,6 +8,7 @@ const config = {
     dbHost: process.env.DB_HOST,
     dbPort: process.env.DB_PORT,
     dbName: process.env.DB_NAME,
+    dbCollectionName: process.env.DB_COLLECTION_NAME,
     //mysql
     mysqlHost: process.env.MYSQL_HOST,
     mysqlUser: process.env.MYSQL_USER,
@@ -16,6 +17,7 @@ const config = {
     //FileSystem
     dirRoot: process.env.ROOT,
     tempImg: process.env.TEMP_IMG,
+    pathPapelera: process.env.PATH_PAPELERA,
     //users
     defaultAdminPassword: process.env.DEFAULT_ADMIN_PASSWORD,
     defaultUserPassword: process.env.DEFAULT_USER_PASSWORD,

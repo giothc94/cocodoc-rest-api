@@ -1,0 +1,86 @@
+// TODOS LOS PERMISOS
+
+# DIRECTORIES
+'read:directory'
+'create:directory'
+'update:directory'
+'delete:directory'
+
+# FILES
+'create:files'
+'delete:files'
+'read:files'
+
+# ROLES
+'read:roles'
+'read:scopes'
+'create:scope'
+'delete:scope'
+
+#USERS
+'read:users'
+'create:users'
+'update:users'
+'delete:users'
+
+// PERMISOS DE CADA USUARIO
+
+# # # ADMINISTRATOR
+* DIRECTORIES
+'read:directory'
+'create:directory'
+'update:directory'
+'delete:directory'
+
+* FILES
+'create:files'
+'delete:files'
+'read:files'
+
+* ROLES
+'read:roles'
+'read:scopes'
+'create:scope'
+'delete:scope'
+
+*USERS
+'read:users'
+'create:users'
+'update:users'
+'delete:users'
+
+
+# # # SECRETARY
+* DIRECTORIES
+'read:directory'
+'create:directory'
+'update:directory'
+'delete:directory'
+
+* FILES
+'create:files'
+'delete:files'
+'read:files'
+
+* ROLES
+'read:roles'
+'read:scopes'
+
+*USERS
+'read:users'
+'create:users'
+'update:users'
+
+
+# # # INTERN
+* DIRECTORIES
+'read:directory'
+'create:directory'
+'update:directory'
+
+* FILES
+'create:files'
+'read:files'
+
+
+

@@ -48,7 +48,7 @@ class DocumentsService {
 
                 resolve({...resultDoc });
             } catch (error) {
-                console.error('ERROR:::', error);
+                console.error("ERROR:::", error);
                 fs.unlink(locationSystem, async error => {
                     if (error) reject(error);
                 });
@@ -88,14 +88,35 @@ class DocumentsService {
 
     searchPdf = ({ _query, queryParam }) => {
         return new Promise((resolve, reject) => {
-            var obj = {}
-            obj[`${_query}`] = new RegExp(`${queryParam}`)
+            var obj = {};
+            obj[`${_query}`] = new RegExp(`${queryParam}`);
             this._dataDocument
                 .findDataOfPdf({ query: obj })
                 .then(resp => {
                     resolve(resp);
                 })
                 .catch(reject);
+        });
+    };
+    deletePdf = idDocument => {
+        return new Promise(async(resolve, reject) => {
+            this._documentCocodocDao
+                .getDocumentCocodoc({ idDoc: idDocument })
+                .then(resp => resp)
+                .then(({ path_system_folder, id_doc, name_doc }) => {
+                    const deletPath = path.join(
+                        path_system_folder,
+                        `${id_doc}-${name_doc}`
+                    );
+                    return this._pdfCocodoc.deleteDoc({ pathDoc: deletPath });
+                })
+                .then(() => this._dataDocument.deleteDataPdf({ idDoc: idDocument }))
+                .then(() => this._documentCocodocDao.deleteDocumentCocodoc({ idDoc: idDocument }))
+                .then(resolve)
+                .catch(error => {
+                    console.log(error);
+                    reject(error);
+                });
         });
     };
 }
