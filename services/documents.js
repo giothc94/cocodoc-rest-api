@@ -1,12 +1,14 @@
 const { DocumentCocodoc } = require("../lib/dao/DocumentCocodocDao");
 const { PDFCocodoc } = require("../lib/pdfCocodoc");
+const { DataDocument } = require("../lib/mongodb/documents");
 const path = require("path");
 const fs = require("fs");
 
 class DocumentsService {
     constructor() {
         this._pdfCocodoc = new PDFCocodoc();
-        this._documentCocodoc = new DocumentCocodoc();
+        this._documentCocodocDao = new DocumentCocodoc();
+        this._dataDocument = new DataDocument();
     }
     createPdf = (body, user) => {
         return new Promise(async(resolve, reject) => {
@@ -31,7 +33,7 @@ class DocumentsService {
                 });
                 locationSystem = resultDoc.locationSystem;
                 delete resultDoc.locationSystem;
-                const resultDb = await this._documentCocodoc.createDocumentCocodoc({
+                const resultDb = await this._documentCocodocDao.createDocumentCocodoc({
                     idDocumet: resultDoc.idDoc,
                     nameDocument: resultDoc.nameDocument,
                     registrationDate: new Date(),
@@ -39,37 +41,31 @@ class DocumentsService {
                     idFolder: body.idFolder,
                     idUser: user.ID
                 });
-                // RESULT
-                // {
-                //     "idDoc": "1567832396527",
-                //     "nameDocument": "one_name.pdf",
-                //     "createdBy": "Geovanny Gabriel Arguello Costta",
-                //     "location": "/cocodoc/alcantarillado/one_name.pdf",
-                //     locationSystem: documentDestination
-                // }
-                body.documentsFiles.forEach(element => {
-                    fs.unlink(element, error => {
-                        if (error) console.log(error);
-                    });
+                const respDocuments = await this._dataDocument.insertPdf({
+                    documentPdf: {...body, ...resultDoc },
+                    user: user
                 });
+
                 resolve({...resultDoc });
             } catch (error) {
-                fs.unlink(locationSystem, error => {
+                console.error('ERROR:::', error);
+                fs.unlink(locationSystem, async error => {
                     if (error) reject(error);
                 });
+                reject(error);
+            } finally {
                 body.documentsFiles.forEach(element => {
                     fs.unlink(element, error => {
                         if (error) console.log(error);
                     });
                 });
-                reject(error);
             }
         });
     };
 
     getPdf = idDocument => {
         return new Promise((resolve, reject) => {
-            this._documentCocodoc
+            this._documentCocodocDao
                 .getDocumentCocodoc({ idDoc: idDocument })
                 .then(resp => {
                     const { path_system_folder, id_doc, name_doc } = resp;
@@ -78,5 +74,34 @@ class DocumentsService {
                 .catch(reject);
         });
     };
+
+    getAllPdf = () => {
+        return new Promise((resolve, reject) => {
+            this._dataDocument
+                .findAllDataOfPdfs()
+                .then(resp => {
+                    resolve(resp);
+                })
+                .catch(reject);
+        });
+    };
+
+    searchPdf = ({ _query, queryParam }) => {
+        return new Promise((resolve, reject) => {
+            var obj = {}
+            obj[`${_query}`] = new RegExp(`${queryParam}`)
+            this._dataDocument
+                .findDataOfPdf({ query: obj })
+                .then(resp => {
+                    resolve(resp);
+                })
+                .catch(reject);
+        });
+    };
 }
 module.exports.DocumentsService = DocumentsService;
+
+// var s = new DocumentsService()
+// s.searchPdf({ _query: 'title', queryParam: 'evaluacion de riesgo alcantarilado' })
+//     .then(resp => console.log(resp))
+//     .catch(error => console.log(error))

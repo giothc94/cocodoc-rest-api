@@ -62,4 +62,18 @@ const validationIdPdf = (schemaData, checkData = "params") => {
         }
     };
 };
-module.exports = { validationPdfHandler, validationIdPdf };
+const validationParamsPdf = (schemaData, checkData = "query") => {
+    return (req, res, next) => {
+        const { query } = req[checkData];
+        const { queryParam } = req[checkData];
+        if (!query || !queryParam) {
+            next({ message: "se requiere el query y queryParam en el query", status: 400 });
+        } else {
+            const error = validate({ query, queryParam }, schemaData);
+            error.error ?
+                next({ message: error.error.details[0].message, status: 400 }) :
+                next();
+        }
+    };
+};
+module.exports = { validationPdfHandler, validationIdPdf, validationParamsPdf };

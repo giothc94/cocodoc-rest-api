@@ -1,4 +1,11 @@
 const Joi = require("@hapi/joi");
+const _documentQuery = {
+    query: Joi.string()
+        .regex(/^[a-zA-Z]{4,50}$/),
+    queryParam: Joi.string()
+        .regex(/^[a-zA-z0-9-_ ]{1,100}$/)
+};
+
 const _idDocument = Joi.string()
     .regex(/^[0-9]{10,50}$/)
     .required();
@@ -104,4 +111,4 @@ const _pdfData = {
         .required()
 };
 
-module.exports = { _pdfRecord, _pdfCreate, _pdfData, _idDocument };
+module.exports = { _pdfRecord, _pdfCreate, _pdfData, _idDocument, _documentQuery };

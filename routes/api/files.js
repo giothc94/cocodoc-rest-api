@@ -1,9 +1,10 @@
 const express = require("express");
 const {
     validationPdfHandler,
-    validationIdPdf
+    validationIdPdf,
+    validationParamsPdf
 } = require("../../utils/middleware/validationPdfHandler");
-const { _pdfCreate, _idDocument } = require("../../utils/schemas/verifyPdf");
+const { _pdfCreate, _idDocument, _documentQuery } = require("../../utils/schemas/verifyPdf");
 const passport = require("passport");
 const fs = require("fs");
 const router = express.Router();
@@ -15,19 +16,6 @@ router
         validationPdfHandler(_pdfCreate),
         async(req, res, next) => {
             const { body } = req;
-            const {
-                user: {
-                    ID,
-                    CEDULA,
-                    PRIMER_NOMBRE,
-                    SEGUNDO_NOMBRE,
-                    PRIMER_APELLIDO,
-                    SEGUNDO_APELLIDO,
-                    TIPO_USUARIO,
-                    ID_ROL,
-                    SCOPES
-                }
-            } = req;
             const { user } = req;
             const pdf = new DocumentsService();
             pdf
@@ -45,17 +33,63 @@ router
         }
     )
     .get(
-        "/:id",
+        "/",
         passport.authenticate('jwt', { session: false }), // prettier-ignore
-        validationIdPdf(_idDocument), //prettier-ignore 
         async(req, res, next) => {
-            const { params: { id } } = req
             const pdf = new DocumentsService();
-            pdf.getPdf(id)
+            pdf
+                .getAllPdf()
+                .then(resp => {
+                    res.status(200).json({
+                        Docs: resp,
+                        Message: "Resultado de busqueda",
+                        Ok: true,
+                        Status: 200,
+                        StatusText: "Ok"
+                    });
+                })
+                .catch(next);
+        }
+    )
+    .get(
+        "/search/:id",
+        // passport.authenticate('jwt', { session: false }), // prettier-ignore
+        validationIdPdf(_idDocument), //prettier-ignore
+        async(req, res, next) => {
+            const {
+                params: { id }
+            } = req;
+            const pdf = new DocumentsService();
+            pdf
+                .getPdf(id)
                 .then(resp => {
                     fs.createReadStream(resp).pipe(res);
                 })
-                .catch(next)
-        });
+                .catch(next);
+        }
+    )
+    .get(
+        "/search",
+        passport.authenticate('jwt', { session: false }), // prettier-ignore
+        validationParamsPdf(_documentQuery), //prettier-ignore
+        async(req, res, next) => {
+            const {
+                query: { query, queryParam }
+            } = req;
+            const pdf = new DocumentsService();
+            pdf
+                .searchPdf({ _query: query, queryParam: queryParam })
+                .then(resp => {
+                    res.status(200).json({
+                        Match: resp,
+                        Message: "Resultado de busqueda",
+                        Ok: true,
+                        Status: 200,
+                        StatusText: "Ok"
+                    });
+                })
+                .catch(next);
+        }
+    );
 
 module.exports = router;
