@@ -13,8 +13,9 @@ class DocumentsService {
     createPdf = (body, user) => {
         return new Promise(async(resolve, reject) => {
             var locationSystem = "";
-            try {
-                const resultDoc = await this._pdfCocodoc.createDoc({
+            var response = null;
+            this._pdfCocodoc
+                .createDoc({
                     nameFile: body.title,
                     idFolderDestination: body.idFolder,
                     metadata: body,
@@ -30,36 +31,52 @@ class DocumentsService {
                         " " +
                         user.SEGUNDO_APELLIDO.charAt(0).toUpperCase() +
                         user.SEGUNDO_APELLIDO.slice(1)
-                });
-                locationSystem = resultDoc.locationSystem;
-                delete resultDoc.locationSystem;
-                const resultDb = await this._documentCocodocDao.createDocumentCocodoc({
-                    idDocumet: resultDoc.idDoc,
-                    nameDocument: resultDoc.nameDocument,
-                    registrationDate: new Date(),
-                    lastModification: new Date(),
-                    idFolder: body.idFolder,
-                    idUser: user.ID
-                });
-                const respDocuments = await this._dataDocument.insertPdf({
-                    documentPdf: {...body, ...resultDoc },
-                    user: user
-                });
-
-                resolve({...resultDoc });
-            } catch (error) {
-                console.error("ERROR:::", error);
-                fs.unlink(locationSystem, async error => {
-                    if (error) reject(error);
-                });
-                reject(error);
-            } finally {
-                body.documentsFiles.forEach(element => {
-                    fs.unlink(element, error => {
-                        if (error) console.log(error);
+                })
+                .then(resultDoc => {
+                    locationSystem = resultDoc.locationSystem;
+                    delete resultDoc.locationSystem;
+                    return resultDoc;
+                })
+                .then(_resultDoc => {
+                    response = _resultDoc;
+                    return this._documentCocodocDao.createDocumentCocodoc({
+                        idDocumet: _resultDoc.idDoc,
+                        nameDocument: _resultDoc.nameDocument,
+                        registrationDate: new Date(),
+                        lastModification: new Date(),
+                        idFolder: body.idFolder,
+                        idUser: user.ID
+                    });
+                })
+                .then(() => {
+                    return this._dataDocument.insertPdf({
+                        documentPdf: {...body, ...response },
+                        user: user
+                    });
+                })
+                .then(() => {
+                    resolve({...response });
+                })
+                .catch(error_catch => {
+                    fs.unlink(locationSystem, error => {
+                        if (error) reject(error);
+                        this._documentCocodocDao
+                            .deleteDocumentCocodoc({ idDoc: response.idDoc })
+                            .then(ok => {
+                                reject({...error_catch });
+                            })
+                            .catch(_error => {
+                                reject({...error_catch });
+                            });
+                    });
+                })
+                .then(() => {
+                    body.documentsFiles.forEach(element => {
+                        fs.unlink(element, error => {
+                            if (error) console.log(error);
+                        });
                     });
                 });
-            }
         });
     };
 
@@ -89,7 +106,7 @@ class DocumentsService {
     searchPdf = ({ _query, queryParam }) => {
         return new Promise((resolve, reject) => {
             var obj = {};
-            obj[`${_query}`] = new RegExp(`${queryParam}`);
+            obj[`${_query}`] = new RegExp(`${queryParam}`, 'ig');
             this._dataDocument
                 .findDataOfPdf({ query: obj })
                 .then(resp => {
@@ -111,7 +128,9 @@ class DocumentsService {
                     return this._pdfCocodoc.deleteDoc({ pathDoc: deletPath });
                 })
                 .then(() => this._dataDocument.deleteDataPdf({ idDoc: idDocument }))
-                .then(() => this._documentCocodocDao.deleteDocumentCocodoc({ idDoc: idDocument }))
+                .then(() =>
+                    this._documentCocodocDao.deleteDocumentCocodoc({ idDoc: idDocument })
+                )
                 .then(resolve)
                 .catch(error => {
                     console.log(error);

@@ -2,13 +2,20 @@ const passport = require("passport");
 const express = require("express");
 const router = express.Router();
 const { RolesServices } = require("../../services/roles");
-const { _CreateScopeSchema, _KeyRolSchema } = require('../../utils/schemas/verifyScope');
-const validationHandler = require('../../utils/middleware/validationHandler');
+const {
+    _CreateScopeSchema,
+    _KeyRolSchema
+} = require("../../utils/schemas/verifyScope");
+const validationHandler = require("../../utils/middleware/validationHandler");
+const {
+    scopesValidationHandler
+} = require("../../utils/middleware/scopesValidationHandler");
 
 router
     .get(
         "/",
         passport.authenticate("jwt", { session: false }), //prettier-ignore
+        scopesValidationHandler({ allowedScope: "read:roles" }),
         async(req, res, next) => {
             let rs = new RolesServices();
             rs.getRoles()
@@ -27,6 +34,7 @@ router
     .get(
         '/scopes', //prettier-ignore
         passport.authenticate("jwt", { session: false }),
+        scopesValidationHandler({ allowedScope: "read:scopes" }),
         (req, res, next) => {
             const { keyRol } = req.params;
             let rs = new RolesServices();
@@ -40,13 +48,14 @@ router
                         StatusText: "Ok"
                     });
                 })
-                .catch(next)
+                .catch(next);
         }
     )
     .get(
         '/scope/:keyRol', //prettier-ignore
         passport.authenticate("jwt", { session: false }),
-        validationHandler(_KeyRolSchema, 'params'),
+        scopesValidationHandler({ allowedScope: "read:scopes" }),
+        validationHandler(_KeyRolSchema, "params"),
         (req, res, next) => {
             const { keyRol } = req.params;
             let rs = new RolesServices();
@@ -60,15 +69,16 @@ router
                         StatusText: "Ok"
                     });
                 })
-                .catch(next)
+                .catch(next);
         }
     )
     .post(
         '/scope', //prettier-ignore
         passport.authenticate("jwt", { session: false }),
+        scopesValidationHandler({ allowedScope: "create:scope" }),
         validationHandler(_CreateScopeSchema),
         (req, res, next) => {
-            const { nameScope, keyRol } = req.body
+            const { nameScope, keyRol } = req.body;
             let rs = new RolesServices();
             rs.createScopeForRol({ scope: nameScope, keyRol: keyRol })
                 .then(resp => {
@@ -86,6 +96,7 @@ router
     .delete(
         '/scope/:idScope', //prettier-ignore
         passport.authenticate("jwt", { session: false }),
+        scopesValidationHandler({ allowedScope: "delete:scope" }),
         (req, res, next) => {
             let rs = new RolesServices();
         }

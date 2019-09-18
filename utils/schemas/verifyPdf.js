@@ -1,7 +1,7 @@
 const Joi = require("@hapi/joi");
 const _documentQuery = {
     query: Joi.string()
-        .regex(/^[a-zA-Z]{4,50}$/),
+        .regex(/^[a-zA-Z.]{4,50}$/),
     queryParam: Joi.string()
         .regex(/^[a-zA-z0-9-_ ]{1,100}$/)
 };
@@ -25,7 +25,7 @@ const _pdfRecord = {
 };
 const _pdfCreate = {
     title: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-z ]{2,200}$/)
         .required(),
     subject: Joi.string()
         .regex(/^[a-z ]{2,50}$/)

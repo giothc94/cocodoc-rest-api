@@ -10,9 +10,12 @@ const validate = (data, schema) => {
 const validationHandler = (schema, check = "body") => {
     return function(req, res, next) {
         const error = validate(req[check], schema);
-        error.error ?
-            next({ message: error.error.details[0].message, status: 400 }) :
+        if (error.error) {
+            next({ message: error.error.details[0].message, status: 400 })
+        } else {
+            req[check] = error.value
             next();
+        }
     };
 };
 

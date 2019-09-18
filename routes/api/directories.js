@@ -3,7 +3,7 @@ const passport = require("passport");
 const router = express.Router();
 const { FileSystemService } = require("../../services/directory");
 const validationHandler = require("../../utils/middleware/validationHandler");
-const scopesValidationHandler = require('../../utils/middleware/scopesValidationHandler')
+const { scopesValidationHandler } = require('../../utils/middleware/scopesValidationHandler')
 const {
     _folderCreateSchema,
     _folderIdSchemaSchema,
@@ -14,7 +14,7 @@ router
     .get(
         "/",
         passport.authenticate("jwt", { session: false }),
-        // scopesValidationHandler(''),
+        scopesValidationHandler({ allowedScope: 'read:directory' }),
         async(req, res, next) => {
             let fss = new FileSystemService();
             fss
@@ -34,6 +34,7 @@ router
     .post(
         "/",
         passport.authenticate("jwt", { session: false }),
+        scopesValidationHandler({ allowedScope: 'create:directory' }),
         validationHandler(_folderCreateSchema),
         async(req, res, next) => {
             const { body } = req;
@@ -55,6 +56,7 @@ router
     .put(
         "/",
         passport.authenticate("jwt", { session: false }),
+        scopesValidationHandler({ allowedScope: 'update:directory' }),
         validationHandler(_folderUpdateSchema),
         async(req, res, next) => {
             const { body } = req;
@@ -76,6 +78,7 @@ router
     .delete(
         "/",
         passport.authenticate("jwt", { session: false }),
+        scopesValidationHandler({ allowedScope: 'delete:directory' }),
         validationHandler(_folderIdSchemaSchema),
         async(req, res, next) => {
             const { body } = req;

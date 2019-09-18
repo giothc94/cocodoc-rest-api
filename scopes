@@ -81,6 +81,4 @@
 * FILES
 'create:files'
 'read:files'
-
-
-
+'delete:files'

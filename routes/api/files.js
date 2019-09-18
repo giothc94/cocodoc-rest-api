@@ -13,11 +13,15 @@ const passport = require("passport");
 const fs = require("fs");
 const router = express.Router();
 const { DocumentsService } = require("../../services/documents");
+const {
+    scopesValidationHandler
+} = require("../../utils/middleware/scopesValidationHandler");
 
 router
     .post(
         "/",
         passport.authenticate('jwt', { session: false }), // prettier-ignore
+        scopesValidationHandler({ allowedScope: "create:files" }),
         validationPdfHandler(_pdfCreate),
         async(req, res, next) => {
             const { body } = req;
@@ -40,6 +44,7 @@ router
     .get(
         "/",
         passport.authenticate('jwt', { session: false }), // prettier-ignore
+        scopesValidationHandler({ allowedScope: "read:files" }),
         async(req, res, next) => {
             const pdf = new DocumentsService();
             pdf
@@ -58,7 +63,8 @@ router
     )
     .get(
         "/search/:id",
-        // passport.authenticate('jwt', { session: false }), // prettier-ignore
+        passport.authenticate('jwt', { session: false }), // prettier-ignore
+        scopesValidationHandler({ allowedScope: "read:files" }),
         validationIdPdf(_idDocument), //prettier-ignore
         async(req, res, next) => {
             const {
@@ -76,6 +82,7 @@ router
     .get(
         "/search",
         passport.authenticate('jwt', { session: false }), // prettier-ignore
+        scopesValidationHandler({ allowedScope: "read:files" }),
         validationParamsPdf(_documentQuery), //prettier-ignore
         async(req, res, next) => {
             const {
@@ -99,6 +106,7 @@ router
     .delete(
         "/:id",
         passport.authenticate('jwt', { session: false }), // prettier-ignore
+        scopesValidationHandler({ allowedScope: "delete:files" }),
         validationIdPdf(_idDocument), //prettier-ignore
         async(req, res, next) => {
             const {

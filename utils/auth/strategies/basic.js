@@ -30,7 +30,9 @@ structureResponse = (payload, expiresIn = false, token = "") => {
 };
 getTokenExpirationDate = token => {
     const result = jwt.verify(token, config.authJwtSecret);
-    return JSON.parse(JSON.stringify(result)).message ? JSON.parse(JSON.stringify(result)).message : result
+    return JSON.parse(JSON.stringify(result)).message ?
+        JSON.parse(JSON.stringify(result)).message :
+        result;
 };
 
 passport.use(
@@ -55,15 +57,15 @@ passport.use(
                 scopes: scopes.sort()
             };
             const now = new Date();
-            const expirationDate = new Date(user.TOKEN_EXPIRATION_DATE)
+            const expirationDate = new Date(user.TOKEN_EXPIRATION_DATE);
             if (user.STATE && now < expirationDate) {
                 // Si aun no expira
                 let response = structureResponse(payload, true, user.ACTIVE_TOKEN);
-                return cb(null, {...response, session: "su sesión sigue activa, debe usar el mismo token" });
-            } else if (
-                (user.STATE && now >= expirationDate) ||
-                !user.STATE
-            ) {
+                return cb(null, {
+                    ...response,
+                    session: "su sesión sigue activa, debe usar el mismo token"
+                });
+            } else if ((user.STATE && now >= expirationDate) || !user.STATE) {
                 // si ya expiro o va a iniciar sesion
                 const response = structureResponse(payload);
                 const { expiresIn } = getTokenExpirationDate(response.token);

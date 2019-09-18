@@ -1,17 +1,15 @@
 // scopes permitidos
 
-scopesValidationHandler = allowedScopes => {
+scopesValidationHandler = ({ allowedScope }) => {
     return (req, res, next) => {
         if (!req.user || (req.user && !req.user.SCOPES)) {
             next('No autorizado');
         }
-        const access = allowedScopes
-            .map(allowedScope => req.user.SCOPES.includes(allowedScope))
-            .find(allowed => Boolean(allowed));
+        const access = req.user.SCOPES.includes(allowedScope);
         if (access) {
             next()
         } else {
-            next('Permisos insuficientes')
+            next({ status: 401, message: 'Permisos insuficientes' })
         }
     };
 };

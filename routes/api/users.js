@@ -7,12 +7,16 @@ const {
     _UserUpdateSchema,
     _UserIdSchema
 } = require("../../utils/schemas/verifyUser");
+const {
+    scopesValidationHandler
+} = require("../../utils/middleware/scopesValidationHandler");
 
 const router = express.Router();
 router
     .get(
         "/",
         passport.authenticate("jwt", { session: false }), // prettier-ignore
+        scopesValidationHandler({ allowedScope: "read:users" }),
         (req, res, next) => {
             let us = new UsersServices();
             us.getUsers()
@@ -31,6 +35,7 @@ router
     .get(
         "/:id",
         passport.authenticate("jwt", { session: false }),
+        scopesValidationHandler({ allowedScope: "read:users" }),
         validationHandler(_UserIdSchema, "params"),
         (req, res, next) => {
             let su = new UsersServices();
@@ -73,6 +78,7 @@ router
     .post(
         "/",
         passport.authenticate("jwt", { session: false }),
+        scopesValidationHandler({ allowedScope: "create:users" }),
         validationHandler(_UserCreateSchema),
         (req, res, next) => {
             const { body } = req;
@@ -93,6 +99,7 @@ router
     .put(
         "/",
         passport.authenticate("jwt", { session: false }),
+        scopesValidationHandler({ allowedScope: "update:users" }),
         validationHandler(_UserUpdateSchema),
         (req, res, next) => {
             const { body } = req;
@@ -113,6 +120,7 @@ router
     .delete(
         "/:id",
         passport.authenticate("jwt", { session: false }),
+        scopesValidationHandler({ allowedScope: "delete:users" }),
         validationHandler(_UserIdSchema, "params"),
         (req, res, next) => {
             const {
@@ -122,7 +130,7 @@ router
             su.deleteUser(id)
                 .then(resp => {
                     res.status(200).json({
-                        "UsuarioEliminado": Boolean(resp),
+                        UsuarioEliminado: Boolean(resp),
                         Ok: true,
                         Status: 200,
                         StatusText: "Ok"
