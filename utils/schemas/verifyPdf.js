@@ -31,7 +31,7 @@ const _pdfCreate = {
         .regex(/^[a-z ]{2,50}$/)
         .required(),
     comment: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-z ]{2,500}$/)
         .required(),
     broadcastDate: Joi.date().required(),
     receptionDate: Joi.date().required(),

@@ -5,7 +5,7 @@ const _folderCreateSchema = {
         .regex(/^[0-9]{10,50}$/)
         .required(),
     nameFolder: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-z0-9 ]{2,50}$/)
         .lowercase()
         .required()
 };
@@ -15,7 +15,7 @@ const _folderUpdateSchema = {
         .regex(/^[0-9]{10,50}$/)
         .required(),
     newNameFolder: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-z0-9 ]{2,50}$/)
         .lowercase()
         .required()
 };

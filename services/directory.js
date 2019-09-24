@@ -8,8 +8,8 @@ class FileSystemService {
     createFolder = body => {
         return new Promise((resolve, reject) => {
             this.FileSystem.createFolderAndPath(body)
-                .then(response => resolve(response))
-                .catch(error => reject({ error: error, status: 400 }));
+                .then(resolve)
+                .catch(reject);
         });
     };
     getDirectory = () => {
@@ -19,18 +19,18 @@ class FileSystemService {
                 .catch(error => reject(error));
         });
     };
-    removeFolder = body => {
+    removeFolder = params => {
         return new Promise((resolve, reject) => {
-            this.FileSystem.deleteFolderAndPath(body)
+            this.FileSystem.deleteFolderAndPath(params)
                 .then(response => resolve(response))
-                .catch(error => reject({ error: error, status: 400 }));
+                .catch(reject);
         });
     };
     renameFolder = body => {
         return new Promise((resolve, reject) => {
             this.FileSystem.renameFolderAndPath(body)
-                .then(response => resolve(response))
-                .catch(error => reject({ error: error, status: 400 }));
+                .then(resolve)
+                .catch(reject);
         });
     };
 }

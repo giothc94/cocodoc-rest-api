@@ -5,7 +5,8 @@ const validationHandler = require("../../utils/middleware/validationHandler");
 const {
     _UserCreateSchema,
     _UserUpdateSchema,
-    _UserIdSchema
+    _UserIdSchema,
+    _KeywordUserSearch
 } = require("../../utils/schemas/verifyUser");
 const {
     scopesValidationHandler
@@ -32,6 +33,31 @@ router
                 .catch(next);
         }
     )
+    .post(
+        "/search",
+        passport.authenticate("jwt", { session: false }), // prettier-ignore
+        scopesValidationHandler({ allowedScope: "read:users" }),
+        validationHandler(_KeywordUserSearch, "body"),
+        (req, res, next) => {
+            const { keyword } = req.body;
+            // console.log(keyword)
+            let us = new UsersServices();
+            us.searchUser(keyword)
+                .then(users => {
+                    res.status(200).json({
+                        Message: "Resultados",
+                        Coincidences: users,
+                        Ok: true,
+                        Status: 200,
+                        StatusText: "Ok"
+                    });
+                })
+                .catch(error => {
+                    console.log('ERROR', error)
+                    next(error)
+                });
+        }
+    )
     .get(
         "/:id",
         passport.authenticate("jwt", { session: false }),
@@ -51,7 +77,8 @@ router
                         PRIMER_APELLIDO,
                         SEGUNDO_APELLIDO,
                         ID,
-                        ID_ROL
+                        ID_ROL,
+                        TIPO_USUARIO
                     } = user;
                     user = {
                         Cedula: CEDULA,
@@ -60,16 +87,15 @@ router
                         PrimerApellido: PRIMER_APELLIDO,
                         SegundoApellido: SEGUNDO_APELLIDO,
                         Id: ID,
-                        IdRol: ID_ROL
+                        IdRol: ID_ROL,
+                        TipoUsuario: TIPO_USUARIO
                     };
                     res.status(200).json({
                         User: user,
-                        Response: {
-                            Message: "Usuario obtenido",
-                            Ok: true,
-                            Status: 200,
-                            Statustext: "Ok"
-                        }
+                        Message: "Usuario obtenido",
+                        Ok: true,
+                        Status: 200,
+                        Statustext: "Ok"
                     });
                 })
                 .catch(next);
@@ -111,7 +137,7 @@ router
                         Message: "Usuario modificado",
                         Ok: true,
                         Status: 200,
-                        StatusText: "Created"
+                        StatusText: "ok"
                     });
                 })
                 .catch(next);

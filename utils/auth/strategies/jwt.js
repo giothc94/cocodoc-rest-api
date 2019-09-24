@@ -14,7 +14,7 @@ passport.use(
             const usersService = new UsersServices();
             const session = new Session();
             try {
-                const userId = jwt.verify(tokenPayload.sub, config.authUserKeySecret);
+                const userId = tokenPayload.sub;
                 const user = await usersService.getUser(userId);
                 let { state } = await session.getState({
                     idKey: user.KEY

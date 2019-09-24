@@ -14,6 +14,16 @@ router.post(
     }
 );
 
+router.get(
+    "/check",
+    passport.authenticate("jwt", { session: false }),
+    async(req, res, next) => {
+        res.status(200).json({
+            ok: 'verified'
+        });
+    }
+);
+
 router.post(
     "/sign-out",
     passport.authenticate("jwt", { session: false }),

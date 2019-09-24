@@ -22,10 +22,16 @@ const validationPdfHandler = (
             var listImgs = [];
             if (Array.isArray(req[checkFiles].images)) {
                 for (const img of req[checkFiles].images) {
-                    listImgs.push(path.join(TEMP_IMG, img.name));
-                    img.mv(path.join(TEMP_IMG, img.name), error => {
-                        if (error) next({ message: "No se agrego la imagen", status: 400 });
-                    });
+                    console.log(img)
+                    if (img.mimetype.split('/').shift() === 'image') {
+                        const uri = path.join(TEMP_IMG, img.name)
+                        listImgs.push(uri);
+                        img.mv(uri, error => {
+                            if (error) next({ message: "No se agrego la imagen", status: 400 });
+                        });
+                    } else {
+                        next({ message: "No se puede cargar ese tipo de archivos", status: 400 })
+                    }
                 }
             } else {
                 req[checkFiles].images.mv(
@@ -38,14 +44,56 @@ const validationPdfHandler = (
                 );
                 listImgs.push(path.join(TEMP_IMG, req[checkFiles].images.name));
             }
-            const error = validate(req[checkData], schemaData);
-            req[checkData].documentsFiles = listImgs;
-            error.error ?
-                next({
-                    message: error.error.details[0].message,
-                    status: 400
-                }) :
-                next();
+            setTimeout(() => {
+                const error = validate(req[checkData], schemaData);
+                req[checkData].documentsFiles = listImgs;
+                if (error && error.error) {
+                    next({
+                        message: error.error.details[0].message,
+                        status: 400
+                    })
+                } else {
+                    next();
+                }
+            }, 1000);
+        }
+    };
+};
+const validationUploadPdfHandler = (
+    schemaData,
+    checkData = "body",
+    checkFiles = "files"
+) => {
+    return (req, res, next) => {
+        if (!req[checkData] || !req[checkFiles]) {
+            next({ message: "se requiere body y files en el request", status: 400 });
+        } else if (!req[checkFiles].pdf) {
+            next({ message: "files.pdf es requerido", status: 400 });
+        } else {
+            var destPdf = '';
+            console.log('CHECK', req[checkFiles])
+            req[checkFiles].pdf.mv(
+                path.join(TEMP_IMG, req[checkFiles].pdf.name),
+                error => {
+                    if (error) {
+                        next({ message: "No se agrego la imagen", status: 400 });
+                    }
+                }
+            );
+            destPdf = path.join(TEMP_IMG, req[checkFiles].pdf.name);
+
+            setTimeout(() => {
+                const error = validate(req[checkData], schemaData);
+                req[checkData].destPdf = destPdf;
+                if (error && error.error) {
+                    next({
+                        message: error.error.details[0].message,
+                        status: 400
+                    })
+                } else {
+                    next();
+                }
+            }, 500);
         }
     };
 };
@@ -81,4 +129,4 @@ const validationParamsPdf = (schemaData, checkData = "query") => {
 };
 
 //REEMPLAZA EL VALIDATE
-module.exports = { validationPdfHandler, validationIdPdf, validationParamsPdf };
+module.exports = { validationPdfHandler, validationIdPdf, validationParamsPdf, validationUploadPdfHandler };

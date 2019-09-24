@@ -35,10 +35,10 @@ class DocumentsService {
                 .then(resultDoc => {
                     locationSystem = resultDoc.locationSystem;
                     delete resultDoc.locationSystem;
+                    response = resultDoc;
                     return resultDoc;
                 })
                 .then(_resultDoc => {
-                    response = _resultDoc;
                     return this._documentCocodocDao.createDocumentCocodoc({
                         idDocumet: _resultDoc.idDoc,
                         nameDocument: _resultDoc.nameDocument,
@@ -58,16 +58,19 @@ class DocumentsService {
                     resolve({...response });
                 })
                 .catch(error_catch => {
+                    console.log(error_catch)
                     fs.unlink(locationSystem, error => {
                         if (error) reject(error);
-                        this._documentCocodocDao
-                            .deleteDocumentCocodoc({ idDoc: response.idDoc })
-                            .then(ok => {
-                                reject({...error_catch });
-                            })
-                            .catch(_error => {
-                                reject({...error_catch });
-                            });
+                        if (response && response.idDoc) {
+                            this._documentCocodocDao
+                                .deleteDocumentCocodoc({ idDoc: response.idDoc })
+                                .then(ok => {
+                                    reject({...error_catch });
+                                })
+                                .catch(_error => {
+                                    reject({...error_catch });
+                                });
+                        }
                     });
                 })
                 .then(() => {
@@ -75,6 +78,77 @@ class DocumentsService {
                         fs.unlink(element, error => {
                             if (error) console.log(error);
                         });
+                    });
+                });
+        });
+    };
+
+    uploadPdf = (body, user) => {
+        return new Promise(async(resolve, reject) => {
+            var locationSystem = "";
+            var response = null;
+            this._pdfCocodoc
+                .uploadDoc({
+                    nameFile: body.title,
+                    idFolderDestination: body.idFolder,
+                    metadata: body,
+                    files: body.destPdf,
+                    nameCreator: user.PRIMER_NOMBRE.charAt(0).toUpperCase() +
+                        user.PRIMER_NOMBRE.slice(1) +
+                        " " +
+                        user.SEGUNDO_NOMBRE.charAt(0).toUpperCase() +
+                        user.SEGUNDO_NOMBRE.slice(1) +
+                        " " +
+                        user.PRIMER_APELLIDO.charAt(0).toUpperCase() +
+                        user.PRIMER_APELLIDO.slice(1) +
+                        " " +
+                        user.SEGUNDO_APELLIDO.charAt(0).toUpperCase() +
+                        user.SEGUNDO_APELLIDO.slice(1)
+                })
+                .then(resultDoc => {
+                    locationSystem = resultDoc.locationSystem;
+                    delete resultDoc.locationSystem;
+                    response = resultDoc;
+                    return resultDoc;
+                })
+                .then(_resultDoc => {
+                    return this._documentCocodocDao.createDocumentCocodoc({
+                        idDocumet: _resultDoc.idDoc,
+                        nameDocument: _resultDoc.nameDocument,
+                        registrationDate: new Date(),
+                        lastModification: new Date(),
+                        idFolder: body.idFolder,
+                        idUser: user.ID
+                    });
+                })
+                .then(() => {
+                    return this._dataDocument.insertPdf({
+                        documentPdf: {...body, ...response },
+                        user: user
+                    });
+                })
+                .then(() => {
+                    resolve({...response });
+                })
+                .catch(error_catch => {
+                    console.log(error_catch)
+                    fs.unlink(locationSystem, error => {
+                        if (error) reject(error);
+                        if (response && response.idDoc) {
+                            this._documentCocodocDao
+                                .deleteDocumentCocodoc({ idDoc: response.idDoc })
+                                .then(ok => {
+                                    reject({...error_catch });
+                                })
+                                .catch(_error => {
+                                    reject({...error_catch });
+                                });
+                        }
+                    });
+                })
+                .then(() => {
+                    fs.unlink(body.destPdf, error => {
+                        if (error) console.log(error);
                     });
                 });
         });

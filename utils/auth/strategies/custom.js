@@ -14,7 +14,7 @@ passport.use(
             let usersService = new UsersServices();
             const token = req.headers["authorization"].split(" ").pop();
             const payload = jwt.verify(token, config.authJwtSecret);
-            const userId = jwt.verify(payload.sub, config.authUserKeySecret);
+            const userId = payload.sub;
             const user = await usersService.getUser(userId);
             user.STATE = Boolean(user.STATE);
             if (!user.STATE) {

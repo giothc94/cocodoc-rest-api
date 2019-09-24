@@ -2,7 +2,8 @@ const express = require("express");
 const {
     validationPdfHandler,
     validationIdPdf,
-    validationParamsPdf
+    validationParamsPdf,
+    validationUploadPdfHandler
 } = require("../../utils/middleware/validationPdfHandler");
 const {
     _pdfCreate,
@@ -33,6 +34,29 @@ router
                     res.status(200).json({
                         ...resp,
                         message: "Documento creado",
+                        ok: true,
+                        status: 200,
+                        statusText: "Ok"
+                    });
+                })
+                .catch(next);
+        }
+    )
+    .post(
+        "/upload",
+        passport.authenticate('jwt', { session: false }), // prettier-ignore
+        scopesValidationHandler({ allowedScope: "create:files" }),
+        validationUploadPdfHandler(_pdfCreate),
+        async(req, res, next) => {
+            const { body } = req;
+            const { user } = req;
+            const pdf = new DocumentsService();
+            pdf
+                .uploadPdf(body, user)
+                .then(resp => {
+                    res.status(200).json({
+                        ...resp,
+                        message: "Documento cargado",
                         ok: true,
                         status: 200,
                         statusText: "Ok"
@@ -74,9 +98,17 @@ router
             pdf
                 .getPdf(id)
                 .then(resp => {
-                    fs.createReadStream(resp).pipe(res);
+                    // fs.readFile(resp,(error,data)=>{
+                    //     if(error)next(error);
+                    //     res.contentType('application/pdf');
+                    //     res.send(data)
+                    // });
+                    res.sendFile(resp)
                 })
-                .catch(next);
+                .catch(error => {
+                    console.log(error);
+                    next(error)
+                });
         }
     )
     .get(

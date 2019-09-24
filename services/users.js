@@ -57,6 +57,14 @@ class UsersServices {
                 .catch(error => reject(error))
         })
     }
+    searchUser = (dataUser) => {
+        return new Promise((resolve, reject) => {
+            let us = new UsersCocodoc();
+            us.searchUser(dataUser)
+                .then(resolve)
+                .catch(reject)
+        })
+    }
 }
 
 module.exports.UsersServices = UsersServices;

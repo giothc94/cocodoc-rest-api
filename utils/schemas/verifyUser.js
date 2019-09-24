@@ -15,6 +15,13 @@ const _UpdateUserPassword = {
         .required()
 };
 
+const _KeywordUserSearch = {
+    keyword: Joi.string()
+        .regex(/^[a-zA-z0-9]{2,25}$/)
+        .lowercase()
+        .required()
+}
+
 const _UserCreateSchema = {
     cedula: Joi.string()
         .min(10)
@@ -74,4 +81,4 @@ const _UserUpdateSchema = {
         .required()
 };
 
-module.exports = { _UserCreateSchema, _UserUpdateSchema, _UserIdSchema, _UpdateUserPassword };
+module.exports = { _UserCreateSchema, _UserUpdateSchema, _UserIdSchema, _UpdateUserPassword, _KeywordUserSearch };

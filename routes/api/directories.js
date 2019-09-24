@@ -76,15 +76,15 @@ router
         }
     )
     .delete(
-        "/",
+        "/:idFolder",
         passport.authenticate("jwt", { session: false }),
         scopesValidationHandler({ allowedScope: 'delete:directory' }),
-        validationHandler(_folderIdSchemaSchema),
+        validationHandler(_folderIdSchemaSchema, 'params'),
         async(req, res, next) => {
-            const { body } = req;
+            const { params } = req;
             let fss = new FileSystemService();
             fss
-                .removeFolder(body)
+                .removeFolder(params)
                 .then(resp => {
                     res.status(200).json({
                         data: resp,

@@ -43,12 +43,11 @@ passport.use(
             const user = await userService.verifyUser({ user: usr, password: passw });
             user.STATE = Boolean(user.STATE);
             user.IS_NEW = Boolean(user.IS_NEW);
-            const userKeyToken = await jwt.sign(user.ID, config.authUserKeySecret);
             const { key } = await rolesService.getKeyRol(user.ID_ROL);
             const { scopes } = await rolesService.getRolAndScopesByKey(key);
 
             const payload = {
-                sub: userKeyToken,
+                sub: user.ID,
                 name: `${user.PRIMER_NOMBRE.charAt(0).toUpperCase() 
                     + user.PRIMER_NOMBRE.slice(1)} ${user.SEGUNDO_NOMBRE.charAt(0).toUpperCase() 
                     + user.SEGUNDO_NOMBRE.slice(1)} ${user.PRIMER_APELLIDO.charAt(0).toUpperCase() 
@@ -61,6 +60,7 @@ passport.use(
             if (user.STATE && now < expirationDate) {
                 // Si aun no expira
                 let response = structureResponse(payload, true, user.ACTIVE_TOKEN);
+                response.isNew = user.IS_NEW
                 return cb(null, {
                     ...response,
                     session: "su sesión sigue activa, debe usar el mismo token"
@@ -76,7 +76,8 @@ passport.use(
                     tokenExpirationDate: new Date(expiresIn),
                     activeToken: response.token
                 });
-                return cb(null, {...response, session: message });
+                response.isNew = user.IS_NEW
+                return cb(null, {...response, session: message, expiresIn: '2h' });
             }
         } catch (error) {
             return cb(error);
