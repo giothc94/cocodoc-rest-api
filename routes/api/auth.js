@@ -14,6 +14,7 @@ router.post(
     }
 );
 
+<<<<<<< HEAD
 router.get(
     "/check",
     passport.authenticate("jwt", { session: false }),
@@ -24,6 +25,8 @@ router.get(
     }
 );
 
+=======
+>>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
 router.post(
     "/sign-out",
     passport.authenticate("jwt", { session: false }),

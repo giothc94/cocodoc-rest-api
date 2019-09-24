@@ -138,12 +138,18 @@ router
     .delete(
         "/:id",
         passport.authenticate('jwt', { session: false }), // prettier-ignore
+<<<<<<< HEAD
         scopesValidationHandler({ allowedScope: "delete:files" }),
         validationIdPdf(_idDocument), //prettier-ignore
         async(req, res, next) => {
             const {
                 params: { id }
             } = req;
+=======
+        validationIdPdf(_idDocument), //prettier-ignore 
+        async(req, res, next) => {
+            const { params: { id } } = req
+>>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
             const pdf = new DocumentsService();
             pdf
                 .deletePdf(id)

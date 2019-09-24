@@ -17,7 +17,10 @@ router
     .get(
         "/",
         passport.authenticate("jwt", { session: false }), // prettier-ignore
+<<<<<<< HEAD
         scopesValidationHandler({ allowedScope: "read:users" }),
+=======
+>>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
         (req, res, next) => {
             let us = new UsersServices();
             us.getUsers()
@@ -33,6 +36,7 @@ router
                 .catch(next);
         }
     )
+<<<<<<< HEAD
     .post(
         "/search",
         passport.authenticate("jwt", { session: false }), // prettier-ignore
@@ -58,6 +62,8 @@ router
                 });
         }
     )
+=======
+>>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
     .get(
         "/:id",
         passport.authenticate("jwt", { session: false }),
@@ -77,8 +83,12 @@ router
                         PRIMER_APELLIDO,
                         SEGUNDO_APELLIDO,
                         ID,
+<<<<<<< HEAD
                         ID_ROL,
                         TIPO_USUARIO
+=======
+                        ID_ROL
+>>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
                     } = user;
                     user = {
                         Cedula: CEDULA,
@@ -87,6 +97,7 @@ router
                         PrimerApellido: PRIMER_APELLIDO,
                         SegundoApellido: SEGUNDO_APELLIDO,
                         Id: ID,
+<<<<<<< HEAD
                         IdRol: ID_ROL,
                         TipoUsuario: TIPO_USUARIO
                     };
@@ -96,6 +107,18 @@ router
                         Ok: true,
                         Status: 200,
                         Statustext: "Ok"
+=======
+                        IdRol: ID_ROL
+                    };
+                    res.status(200).json({
+                        User: user,
+                        Response: {
+                            Message: "Usuario obtenido",
+                            Ok: true,
+                            Status: 200,
+                            Statustext: "Ok"
+                        }
+>>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
                     });
                 })
                 .catch(next);
@@ -137,7 +160,11 @@ router
                         Message: "Usuario modificado",
                         Ok: true,
                         Status: 200,
+<<<<<<< HEAD
                         StatusText: "ok"
+=======
+                        StatusText: "Created"
+>>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
                     });
                 })
                 .catch(next);
@@ -156,7 +183,11 @@ router
             su.deleteUser(id)
                 .then(resp => {
                     res.status(200).json({
+<<<<<<< HEAD
                         UsuarioEliminado: Boolean(resp),
+=======
+                        "UsuarioEliminado": Boolean(resp),
+>>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
                         Ok: true,
                         Status: 200,
                         StatusText: "Ok"
