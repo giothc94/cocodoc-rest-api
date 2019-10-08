@@ -15,14 +15,14 @@ class FileSystemService {
     getDirectory = () => {
         return new Promise((resolve, reject) => {
             this.FileSystem.getDirectory()
-                .then(response => resolve(response))
-                .catch(error => reject(error));
+                .then(resolve)
+                .catch(reject);
         });
     };
     removeFolder = params => {
         return new Promise((resolve, reject) => {
             this.FileSystem.deleteFolderAndPath(params)
-                .then(response => resolve(response))
+                .then(resolve)
                 .catch(reject);
         });
     };

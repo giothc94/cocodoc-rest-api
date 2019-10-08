@@ -9,7 +9,7 @@ const {
     _folderIdSchemaSchema,
     _folderUpdateSchema
 } = require("../../utils/schemas/verifyFolder");
-
+const responses = require('../../utils/response/responses')
 router
     .get(
         "/",
@@ -20,13 +20,7 @@ router
             fss
                 .getDirectory()
                 .then(directory => {
-                    res.status(200).json({
-                        data: directory,
-                        message: "Directorio de Cocodoc",
-                        ok: true,
-                        status: 200,
-                        statusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Directorio de Cocodoc', {...directory })
                 })
                 .catch(next);
         }
@@ -42,13 +36,7 @@ router
             fss
                 .createFolder(body)
                 .then(resp => {
-                    res.status(201).json({
-                        data: resp,
-                        message: "Carpeta creada",
-                        ok: true,
-                        status: 201,
-                        statusText: "Created"
-                    });
+                    responses.successResponse(res, 201, 'Carpeta creada', {...resp })
                 })
                 .catch(next);
         }
@@ -64,13 +52,7 @@ router
             fss
                 .renameFolder(body)
                 .then(resp => {
-                    res.status(201).json({
-                        data: resp,
-                        message: "Nombre de carpeta modificada",
-                        ok: true,
-                        status: 201,
-                        statusText: "Created"
-                    });
+                    responses.successResponse(res, 201, 'Nombre de carpeta modificada', {...resp })
                 })
                 .catch(next);
         }
@@ -86,13 +68,7 @@ router
             fss
                 .removeFolder(params)
                 .then(resp => {
-                    res.status(200).json({
-                        data: resp,
-                        message: "Carpeta eliminada",
-                        ok: true,
-                        status: 200,
-                        statusText: "ok"
-                    });
+                    responses.successResponse(res, 200, 'Carpeta eliminada')
                 })
                 .catch(next);
         }

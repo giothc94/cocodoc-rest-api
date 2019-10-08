@@ -11,32 +11,23 @@ const {
 const {
     scopesValidationHandler
 } = require("../../utils/middleware/scopesValidationHandler");
+const responses = require('../../utils/response/responses')
 
 const router = express.Router();
 router
     .get(
         "/",
         passport.authenticate("jwt", { session: false }), // prettier-ignore
-<<<<<<< HEAD
         scopesValidationHandler({ allowedScope: "read:users" }),
-=======
->>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
         (req, res, next) => {
             let us = new UsersServices();
             us.getUsers()
                 .then(users => {
-                    res.status(200).json({
-                        Message: "Lista de usuarios",
-                        ListUsers: users,
-                        Ok: true,
-                        Status: 200,
-                        StatusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Lista de usuarios', users)
                 })
                 .catch(next);
         }
     )
-<<<<<<< HEAD
     .post(
         "/search",
         passport.authenticate("jwt", { session: false }), // prettier-ignore
@@ -44,26 +35,17 @@ router
         validationHandler(_KeywordUserSearch, "body"),
         (req, res, next) => {
             const { keyword } = req.body;
-            // console.log(keyword)
             let us = new UsersServices();
             us.searchUser(keyword)
                 .then(users => {
-                    res.status(200).json({
-                        Message: "Resultados",
-                        Coincidences: users,
-                        Ok: true,
-                        Status: 200,
-                        StatusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Resultados', users)
                 })
                 .catch(error => {
-                    console.log('ERROR', error)
+                    console.log(error)
                     next(error)
                 });
         }
     )
-=======
->>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
     .get(
         "/:id",
         passport.authenticate("jwt", { session: false }),
@@ -83,12 +65,8 @@ router
                         PRIMER_APELLIDO,
                         SEGUNDO_APELLIDO,
                         ID,
-<<<<<<< HEAD
                         ID_ROL,
                         TIPO_USUARIO
-=======
-                        ID_ROL
->>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
                     } = user;
                     user = {
                         Cedula: CEDULA,
@@ -97,29 +75,10 @@ router
                         PrimerApellido: PRIMER_APELLIDO,
                         SegundoApellido: SEGUNDO_APELLIDO,
                         Id: ID,
-<<<<<<< HEAD
                         IdRol: ID_ROL,
                         TipoUsuario: TIPO_USUARIO
                     };
-                    res.status(200).json({
-                        User: user,
-                        Message: "Usuario obtenido",
-                        Ok: true,
-                        Status: 200,
-                        Statustext: "Ok"
-=======
-                        IdRol: ID_ROL
-                    };
-                    res.status(200).json({
-                        User: user,
-                        Response: {
-                            Message: "Usuario obtenido",
-                            Ok: true,
-                            Status: 200,
-                            Statustext: "Ok"
-                        }
->>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
-                    });
+                    responses.successResponse(res, 200, 'Usuario obtenido', user)
                 })
                 .catch(next);
         }
@@ -134,13 +93,7 @@ router
             let su = new UsersServices();
             su.createUser(body)
                 .then(resp => {
-                    res.status(201).json({
-                        User: resp,
-                        Message: "Usuario creado",
-                        Ok: true,
-                        Status: 201,
-                        Statustext: "Created"
-                    });
+                    responses.successResponse(res, 201, 'Usuario creado', resp)
                 })
                 .catch(next);
         }
@@ -155,17 +108,7 @@ router
             let su = new UsersServices();
             su.updateUser(body)
                 .then(resp => {
-                    res.status(200).json({
-                        User: resp,
-                        Message: "Usuario modificado",
-                        Ok: true,
-                        Status: 200,
-<<<<<<< HEAD
-                        StatusText: "ok"
-=======
-                        StatusText: "Created"
->>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
-                    });
+                    responses.successResponse(res, 200, 'Usuario modificado', resp)
                 })
                 .catch(next);
         }
@@ -182,16 +125,7 @@ router
             let su = new UsersServices();
             su.deleteUser(id)
                 .then(resp => {
-                    res.status(200).json({
-<<<<<<< HEAD
-                        UsuarioEliminado: Boolean(resp),
-=======
-                        "UsuarioEliminado": Boolean(resp),
->>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
-                        Ok: true,
-                        Status: 200,
-                        StatusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Usuario eliminado')
                 })
                 .catch(next);
         }

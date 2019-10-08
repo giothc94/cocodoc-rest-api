@@ -127,11 +127,8 @@ class DocumentsService {
                         user: user
                     });
                 })
-                .then(() => {
-                    resolve({...response });
-                })
+                .then(() => resolve({...response }))
                 .catch(error_catch => {
-                    console.log(error_catch)
                     fs.unlink(locationSystem, error => {
                         if (error) reject(error);
                         if (response && response.idDoc) {
@@ -146,11 +143,6 @@ class DocumentsService {
                         }
                     });
                 })
-                .then(() => {
-                    fs.unlink(body.destPdf, error => {
-                        if (error) console.log(error);
-                    });
-                });
         });
     };
 
@@ -206,10 +198,7 @@ class DocumentsService {
                     this._documentCocodocDao.deleteDocumentCocodoc({ idDoc: idDocument })
                 )
                 .then(resolve)
-                .catch(error => {
-                    console.log(error);
-                    reject(error);
-                });
+                .catch(reject);
         });
     };
 }

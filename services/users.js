@@ -3,17 +3,14 @@ const { UsersCocodoc } = require("../lib/dao/userCocodocDao");
 const { VerifyUser } = require("../utils/schemas/verifyUser");
 
 class UsersServices {
-    constructor() {
-        // this.collection = 'users'
-        // this.mongodb = new MongoLib()
-    }
+    constructor() {}
 
     createUser = user => {
         return new Promise((resolve, reject) => {
             let us = new UsersCocodoc();
             us.createUserCocodoc(user)
-                .then(resp => resolve(resp))
-                .catch(error => reject({...error }));
+                .then(resolve)
+                .catch(reject);
         });
     };
 
@@ -21,8 +18,8 @@ class UsersServices {
         return new Promise(async(resolve, reject) => {
             let us = new UsersCocodoc();
             us.getUsersCocodoc()
-                .then(users => resolve(users))
-                .catch(err => reject(err));
+                .then(resolve)
+                .catch(reject);
         });
     };
     getUser = id => {
@@ -30,31 +27,31 @@ class UsersServices {
             let us = new UsersCocodoc();
             us.getUserCocodoc(id)
                 .then(user => resolve(user[0]))
-                .catch(err => reject(err));
+                .catch(reject);
         });
     };
     deleteUser = id => {
         return new Promise((resolve, reject) => {
             let us = new UsersCocodoc();
             us.deleteUserCocodoc(id)
-                .then(message => resolve(message))
-                .catch(err => reject(err));
+                .then(resolve)
+                .catch(reject);
         });
     };
     updateUser = user => {
         return new Promise((resolve, reject) => {
             let us = new UsersCocodoc();
             us.updateUserCocodoc(user)
-                .then(resp => resolve(resp))
-                .catch(error => reject({...error }));
+                .then(resolve)
+                .catch(reject);
         });
     };
     updatePasswordUser = ({ idKey, newPassword }) => {
         return new Promise((resolve, reject) => {
             let us = new UsersCocodoc();
             us.updatePasswordUser({ idKey: idKey, newPassword: newPassword })
-                .then(resp => resolve(resp))
-                .catch(error => reject(error))
+                .then(resolve)
+                .catch(reject)
         })
     }
     searchUser = (dataUser) => {

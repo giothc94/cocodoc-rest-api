@@ -7,8 +7,8 @@ class RolesServices {
     getRoles = async() => {
         return new Promise(async(resolve, reject) => {
             this.roles.getRolesUsersCocodoc()
-                .then(roles => resolve(roles))
-                .catch(err => reject(err));
+                .then(resolve)
+                .catch(reject);
         });
     };
 
@@ -16,8 +16,8 @@ class RolesServices {
         return new Promise((resolve, reject) => {
             this.roles
                 .getKeyRol(id)
-                .then(response => resolve(response))
-                .catch(error => reject({ error: error, status: 400 }));
+                .then(resolve)
+                .catch(reject);
         });
     };
 
@@ -41,16 +41,16 @@ class RolesServices {
         return new Promise((resolve, reject) => {
             this.roles
                 .getRolAndScopesByKey(key)
-                .then(response => resolve(response))
-                .catch(error => reject({...error, status: 400 }));
+                .then(resolve)
+                .catch(reject);
         });
     };
     createScopeForRol = async({ scope, keyRol }) => {
         return new Promise((resolve, reject) => {
             this.roles
                 .createScopeForRol({ scope: scope, keyRol: keyRol })
-                .then(resp => resolve(resp))
-                .catch(error => reject(error))
+                .then(resolve)
+                .catch(reject)
         })
     }
 }

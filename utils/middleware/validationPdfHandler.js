@@ -71,12 +71,11 @@ const validationUploadPdfHandler = (
             next({ message: "files.pdf es requerido", status: 400 });
         } else {
             var destPdf = '';
-            console.log('CHECK', req[checkFiles])
             req[checkFiles].pdf.mv(
                 path.join(TEMP_IMG, req[checkFiles].pdf.name),
                 error => {
                     if (error) {
-                        next({ message: "No se agrego la imagen", status: 400 });
+                        next({ message: "No se agrego el pdf", status: 400 });
                     }
                 }
             );

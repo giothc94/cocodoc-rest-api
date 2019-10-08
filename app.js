@@ -4,24 +4,11 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
-
 var fileUpload = require("express-fileupload");
-
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-
-var UsersApiRouter = require("./routes/api/users");
-var FolderApiRouter = require("./routes/api/directories");
-var RolesApiRouter = require("./routes/api/roles");
-var FilesApiRouter = require("./routes/api/files");
-var AuthApiRouter = require("./routes/api/auth");
-var ChangePassword = require("./routes/api/changePassword");
+var routes = require('./routes/routes')
 
 var app = express();
 
-// view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "pug");
 app.use(cors())
 app.use(logger("dev"));
 app.use(express.json());
@@ -44,18 +31,11 @@ require("./utils/auth/strategies/basic");
 
 // JWT strategy
 require("./utils/auth/strategies/jwt");
+
 // Custom Strategy
 require("./utils/auth/strategies/custom");
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
-
-app.use("/api/auth", AuthApiRouter);
-app.use("/api/users", UsersApiRouter);
-app.use("/api/directories", FolderApiRouter);
-app.use("/api/roles", RolesApiRouter);
-app.use("/api/files", FilesApiRouter);
-app.use("/api/change-password", ChangePassword);
+routes.routes(app)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

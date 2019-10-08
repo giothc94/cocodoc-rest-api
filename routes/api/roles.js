@@ -10,6 +10,7 @@ const validationHandler = require("../../utils/middleware/validationHandler");
 const {
     scopesValidationHandler
 } = require("../../utils/middleware/scopesValidationHandler");
+const responses = require('../../utils/response/responses')
 
 router
     .get(
@@ -20,13 +21,7 @@ router
             let rs = new RolesServices();
             rs.getRoles()
                 .then(resp => {
-                    res.status(200).json({
-                        Response: resp,
-                        Message: "Lista de roles",
-                        Ok: true,
-                        Status: 200,
-                        StatusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Lista de roles', resp)
                 })
                 .catch(next);
         }
@@ -40,13 +35,7 @@ router
             let rs = new RolesServices();
             rs.getScopes()
                 .then(resp => {
-                    res.status(200).json({
-                        Message: "Scopes",
-                        ScopesDetail: resp,
-                        Ok: true,
-                        Status: 200,
-                        StatusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Scopes', resp)
                 })
                 .catch(next);
         }
@@ -61,13 +50,7 @@ router
             let rs = new RolesServices();
             rs.getRolAndScopesByKey(keyRol)
                 .then(resp => {
-                    res.status(200).json({
-                        Message: "Scope",
-                        Info: resp,
-                        Ok: true,
-                        Status: 200,
-                        StatusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Scope', resp)
                 })
                 .catch(next);
         }
@@ -82,13 +65,7 @@ router
             let rs = new RolesServices();
             rs.createScopeForRol({ scope: nameScope, keyRol: keyRol })
                 .then(resp => {
-                    res.status(200).json({
-                        Response: resp,
-                        Message: "scope creado",
-                        Ok: true,
-                        Status: 200,
-                        StatusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Scope creado', resp)
                 })
                 .catch(next);
         }

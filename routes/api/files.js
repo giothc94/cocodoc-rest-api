@@ -17,6 +17,7 @@ const { DocumentsService } = require("../../services/documents");
 const {
     scopesValidationHandler
 } = require("../../utils/middleware/scopesValidationHandler");
+const responses = require('../../utils/response/responses')
 
 router
     .post(
@@ -31,13 +32,7 @@ router
             pdf
                 .createPdf(body, user)
                 .then(resp => {
-                    res.status(200).json({
-                        ...resp,
-                        message: "Documento creado",
-                        ok: true,
-                        status: 200,
-                        statusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Documento creado', {...resp })
                 })
                 .catch(next);
         }
@@ -54,13 +49,7 @@ router
             pdf
                 .uploadPdf(body, user)
                 .then(resp => {
-                    res.status(200).json({
-                        ...resp,
-                        message: "Documento cargado",
-                        ok: true,
-                        status: 200,
-                        statusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Documento cargado', {...resp })
                 })
                 .catch(next);
         }
@@ -74,13 +63,7 @@ router
             pdf
                 .getAllPdf()
                 .then(resp => {
-                    res.status(200).json({
-                        Docs: resp,
-                        Message: "Resultado de busqueda",
-                        Ok: true,
-                        Status: 200,
-                        StatusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Resultado de busqueda', resp)
                 })
                 .catch(next);
         }
@@ -97,14 +80,7 @@ router
             const pdf = new DocumentsService();
             pdf
                 .getPdf(id)
-                .then(resp => {
-                    // fs.readFile(resp,(error,data)=>{
-                    //     if(error)next(error);
-                    //     res.contentType('application/pdf');
-                    //     res.send(data)
-                    // });
-                    res.sendFile(resp)
-                })
+                .then(resp => res.sendFile(resp))
                 .catch(error => {
                     console.log(error);
                     next(error)
@@ -124,13 +100,7 @@ router
             pdf
                 .searchPdf({ _query: query, queryParam: queryParam })
                 .then(resp => {
-                    res.status(200).json({
-                        Match: resp,
-                        Message: "Resultado de busqueda",
-                        Ok: true,
-                        Status: 200,
-                        StatusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Resultado de busqueda', resp)
                 })
                 .catch(next);
         }
@@ -138,28 +108,17 @@ router
     .delete(
         "/:id",
         passport.authenticate('jwt', { session: false }), // prettier-ignore
-<<<<<<< HEAD
         scopesValidationHandler({ allowedScope: "delete:files" }),
         validationIdPdf(_idDocument), //prettier-ignore
         async(req, res, next) => {
             const {
                 params: { id }
             } = req;
-=======
-        validationIdPdf(_idDocument), //prettier-ignore 
-        async(req, res, next) => {
-            const { params: { id } } = req
->>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
             const pdf = new DocumentsService();
             pdf
                 .deletePdf(id)
                 .then(resp => {
-                    res.status(200).json({
-                        Message: "Documento eliminado",
-                        Ok: true,
-                        Status: 200,
-                        StatusText: "Ok"
-                    });
+                    responses.successResponse(res, 200, 'Documento eliminado')
                 })
                 .catch(next);
         }

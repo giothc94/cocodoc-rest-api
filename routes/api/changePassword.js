@@ -4,6 +4,7 @@ const passport = require("passport");
 const { UsersServices } = require('../../services/users');
 const validationHandler = require("../../utils/middleware/validationHandler");
 const { _UpdateUserPassword } = require('../../utils/schemas/verifyUser');
+const responses = require('../../utils/response/responses')
 
 router.post(
     "/",
@@ -16,12 +17,12 @@ router.post(
         us.updatePasswordUser({ idKey: KEY, newPassword: newPassword })
             .then(resp => {
                 delete resp.change
-                res.status(200).json({
+                responses.successResponse(res, 200, 'Cambio de password', {
                     ...resp,
                     ok: true,
                     status: 200,
                     statusText: "ok"
-                });
+                })
             })
             .catch(next)
     }

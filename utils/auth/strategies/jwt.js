@@ -14,11 +14,7 @@ passport.use(
             const usersService = new UsersServices();
             const session = new Session();
             try {
-<<<<<<< HEAD
                 const userId = tokenPayload.sub;
-=======
-                const userId = jwt.verify(tokenPayload.sub, config.authUserKeySecret);
->>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
                 const user = await usersService.getUser(userId);
                 let { state } = await session.getState({
                     idKey: user.KEY
@@ -26,23 +22,16 @@ passport.use(
                 state = Boolean(state);
                 expiresIn = new Date(tokenPayload.expiresIn);
                 user.TOKEN_EXPIRATION_DATE = new Date(user.TOKEN_EXPIRATION_DATE);
-<<<<<<< HEAD
                 user.IS_NEW = Boolean(user.IS_NEW);
                 if (user.IS_NEW) {
                     return cb({ message: "requiere cambio de contraseña, no puede acceder hasta que su contraseña sea cambiada", status: 401 });
                 }
-=======
->>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
                 if (
                     state &&
                     expiresIn.getMinutes() === user.TOKEN_EXPIRATION_DATE.getMinutes() &&
                     expiresIn.getHours() === user.TOKEN_EXPIRATION_DATE.getHours()
                 ) {
-<<<<<<< HEAD
                     return cb(null, {...user, SCOPES: tokenPayload.scopes });
-=======
-                    cb(null, {...user, SCOPES: tokenPayload.scopes });
->>>>>>> 9a7cd8e94dd43b7cd9567e03d2bd09c94d6584b5
                 } else {
                     return cb({ message: "no autorizado", status: 401 });
                 }
