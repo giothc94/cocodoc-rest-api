@@ -45,7 +45,6 @@ passport.use(
             user.IS_NEW = Boolean(user.IS_NEW);
             const { key } = await rolesService.getKeyRol(user.ID_ROL);
             const { scopes } = await rolesService.getRolAndScopesByKey(key);
-
             const payload = {
                 sub: user.ID,
                 name: `${user.PRIMER_NOMBRE.charAt(0).toUpperCase() 

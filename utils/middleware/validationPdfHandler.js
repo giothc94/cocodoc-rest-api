@@ -22,7 +22,6 @@ const validationPdfHandler = (
             var listImgs = [];
             if (Array.isArray(req[checkFiles].images)) {
                 for (const img of req[checkFiles].images) {
-                    console.log(img)
                     if (img.mimetype.split('/').shift() === 'image') {
                         const uri = path.join(TEMP_IMG, img.name)
                         listImgs.push(uri);

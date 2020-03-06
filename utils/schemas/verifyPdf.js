@@ -3,7 +3,7 @@ const _documentQuery = {
     query: Joi.string()
         .regex(/^[a-zA-Z.]{4,50}$/),
     queryParam: Joi.string()
-        .regex(/^[a-zA-z0-9-_ ]{1,100}$/)
+        .regex(/^[a-zA-Z0-9-_ ]{1,100}$/)
 };
 
 const _idDocument = Joi.string()
@@ -15,7 +15,7 @@ const _pdfRecord = {
         .regex(/^[0-9]{10,50}$/)
         .required(),
     nameDocument: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-zA-Z ]{2,50}$/)
         .required(),
     registrationDateDocument: Joi.date().required(),
     lastModificationDocument: Joi.date().required(),
@@ -25,13 +25,13 @@ const _pdfRecord = {
 };
 const _pdfCreate = {
     title: Joi.string()
-        .regex(/^[a-z ]{2,200}$/)
+        .regex(/^[a-zA-Z ]{2,200}$/)
         .required(),
     subject: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-zA-Z ]{2,50}$/)
         .required(),
     comment: Joi.string()
-        .regex(/^[a-z ]{2,500}$/)
+        .regex(/^[a-zA-Z ]{2,500}$/)
         .required(),
     broadcastDate: Joi.date().required(),
     receptionDate: Joi.date().required(),
@@ -45,10 +45,10 @@ const _pdfCreate = {
         .regex(/^[0-9-]+$/)
         .required(),
     issuingEntity: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-zA-Z ]{2,50}$/)
         .required(),
     receivingEntity: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-zA-Z ]{2,50}$/)
         .required(),
     numberOfSheetsOriginalDocument: Joi.number()
         .integer()
@@ -62,13 +62,13 @@ const _pdfCreate = {
 
 const _pdfData = {
     title: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-zA-Z ]{2,50}$/)
         .required(),
     subject: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-zA-Z ]{2,50}$/)
         .required(),
     comment: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-zA-Z ]{2,50}$/)
         .required(),
     broadcastDate: Joi.date().required(),
     receptionDate: Joi.date().required(),
@@ -82,10 +82,10 @@ const _pdfData = {
         .regex(/^[0-9-]+$/)
         .required(),
     issuingEntity: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-zA-Z ]{2,50}$/)
         .required(),
     receivingEntity: Joi.string()
-        .regex(/^[a-z ]{2,50}$/)
+        .regex(/^[a-zA-Z ]{2,50}$/)
         .required(),
     numberOfSheetsOriginalDocument: Joi.number()
         .integer()

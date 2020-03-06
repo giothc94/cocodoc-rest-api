@@ -10,6 +10,13 @@ const _folderCreateSchema = {
         .required()
 };
 
+const _rootFolderCreateSchema = {
+    nameFolder: Joi.string()
+        .regex(/^[a-z0-9 ]{2,50}$/)
+        .lowercase()
+        .required()
+};
+
 const _folderUpdateSchema = {
     idFolder: Joi.string()
         .regex(/^[0-9]{10,50}$/)
@@ -25,4 +32,4 @@ const _folderIdSchemaSchema = {
         .regex(/^[0-9]{10,50}$/)
         .required()
 };
-module.exports = { _folderCreateSchema, _folderUpdateSchema, _folderIdSchemaSchema };
+module.exports = { _folderCreateSchema, _folderUpdateSchema, _folderIdSchemaSchema, _rootFolderCreateSchema };

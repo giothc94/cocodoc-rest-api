@@ -16,7 +16,7 @@ const responses = require('../../utils/response/responses')
 const router = express.Router();
 router
     .get(
-        "/",
+        "/list",
         passport.authenticate("jwt", { session: false }), // prettier-ignore
         scopesValidationHandler({ allowedScope: "read:users" }),
         (req, res, next) => {
@@ -47,7 +47,7 @@ router
         }
     )
     .get(
-        "/:id",
+        "/:id/get",
         passport.authenticate("jwt", { session: false }),
         scopesValidationHandler({ allowedScope: "read:users" }),
         validationHandler(_UserIdSchema, "params"),
@@ -84,7 +84,7 @@ router
         }
     )
     .post(
-        "/",
+        "/create",
         passport.authenticate("jwt", { session: false }),
         scopesValidationHandler({ allowedScope: "create:users" }),
         validationHandler(_UserCreateSchema),
@@ -99,7 +99,7 @@ router
         }
     )
     .put(
-        "/",
+        "/update",
         passport.authenticate("jwt", { session: false }),
         scopesValidationHandler({ allowedScope: "update:users" }),
         validationHandler(_UserUpdateSchema),
@@ -114,7 +114,7 @@ router
         }
     )
     .delete(
-        "/:id",
+        "/:id/delete",
         passport.authenticate("jwt", { session: false }),
         scopesValidationHandler({ allowedScope: "delete:users" }),
         validationHandler(_UserIdSchema, "params"),

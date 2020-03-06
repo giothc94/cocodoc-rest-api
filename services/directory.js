@@ -12,6 +12,23 @@ class FileSystemService {
                 .catch(reject);
         });
     };
+    
+    createFolder = body => {
+        return new Promise((resolve, reject) => {
+            this.FileSystem.createFolderAndPath(body)
+                .then(resolve)
+                .catch(reject);
+        });
+    };
+    
+    createRootFolder = body => {
+        return new Promise((resolve, reject) => {
+            this.FileSystem.createRootFolderAndPath(body)
+                .then(resolve)
+                .catch(reject);
+        });
+    };
+
     getDirectory = () => {
         return new Promise((resolve, reject) => {
             this.FileSystem.getDirectory()
@@ -19,6 +36,7 @@ class FileSystemService {
                 .catch(reject);
         });
     };
+
     removeFolder = params => {
         return new Promise((resolve, reject) => {
             this.FileSystem.deleteFolderAndPath(params)
@@ -26,6 +44,7 @@ class FileSystemService {
                 .catch(reject);
         });
     };
+
     renameFolder = body => {
         return new Promise((resolve, reject) => {
             this.FileSystem.renameFolderAndPath(body)
