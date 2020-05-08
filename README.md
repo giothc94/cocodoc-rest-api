@@ -56,8 +56,8 @@ Para producción puede ejecutar:
 > npm run prod
 ```
 
-El datos predefinidos para el primer acceso son:
 ```
+El datos predefinidos para el primer acceso son:
 User: admadm
 Password: 0123456789
 ```
