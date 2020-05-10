@@ -63,3 +63,6 @@ typings/
 .next
 # .env config
 .env
+
+#lock npm
+package-lock.json

@@ -1,6 +1,7 @@
 const { DocumentCocodoc } = require("../lib/dao/DocumentCocodocDao");
 const { PDFCocodoc } = require("../lib/pdfCocodoc");
 const { DataDocument } = require("../lib/mongodb/documents");
+const normalize = require("normalize-path")
 const path = require("path");
 const fs = require("fs");
 
@@ -152,7 +153,7 @@ class DocumentsService {
                 .getDocumentCocodoc({ idDoc: idDocument })
                 .then(resp => {
                     const { path_system_folder, id_doc, name_doc } = resp;
-                    resolve(path.join(path_system_folder, `${id_doc}-${name_doc}`));
+                    resolve(normalize(path.join(path_system_folder, `${id_doc}-${name_doc}`)));
                 })
                 .catch(reject);
         });
@@ -187,10 +188,10 @@ class DocumentsService {
                 .getDocumentCocodoc({ idDoc: idDocument })
                 .then(resp => resp)
                 .then(({ path_system_folder, id_doc, name_doc }) => {
-                    const deletPath = path.join(
+                    const deletPath = normalize(path.join(
                         path_system_folder,
                         `${id_doc}-${name_doc}`
-                    );
+                    ));
                     return this._pdfCocodoc.deleteDoc({ pathDoc: deletPath });
                 })
                 .then(() => this._dataDocument.deleteDataPdf({ idDoc: idDocument }))
@@ -198,7 +199,10 @@ class DocumentsService {
                     this._documentCocodocDao.deleteDocumentCocodoc({ idDoc: idDocument })
                 )
                 .then(resolve)
-                .catch(reject);
+                .catch(err=>{
+                    console.log(err)
+                    reject(err)
+                });
         });
     };
 }

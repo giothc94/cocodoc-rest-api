@@ -49,8 +49,9 @@ const verifyDatabase = (connection, nameDatabase) =>
     const verifyDb = `SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${nameDatabase}'`;
     connection.query(verifyDb, (error, result) => {
       if (error) return reject("Operacion verificacion no completada");
-      if (result.length > 0)
+      if (result.length > 0) {
         return reject(`Database verification: The database already exists.`);
+      }
       return resolve("🔨 The database verification was correct. 🔧");
     });
   });
@@ -58,21 +59,23 @@ const verifyDatabase = (connection, nameDatabase) =>
 // Create database
 const createDatabase = (connection, uriScriptCreateDatabase) =>
   new Promise(async (resolve, reject) => {
-    let createDataBase = await fs.readFile(uriScriptCreateDatabase, "utf-8");
+    let createDataBase = await fs.readFile(uriScriptCreateDatabase, "utf-8").catch(err=>console.log(err));
     createDataBase = createDataBase.replace(
       /`cocodoc`/g,
       "`" + config.mysqlDatabase + "`"
     );
     connection.query(createDataBase, (error, result) => {
-      if (error) reject("Operacion creacion de base de datos no completada");
-      resolve("🚀 Database creation script executed successfully. 🚀");
+      if (error) {
+        return reject("Operacion creacion de base de datos no completada");
+      }
+      return resolve("🚀 Database creation script executed successfully. 🚀");
     });
   });
 
 // Create scopes
 const createScopes = (connection, uriScriptCreateScopes) =>
   new Promise(async (resolve, reject) => {
-    let createScopes = await fs.readFile(uriScriptCreateScopes, "utf-8");
+    let createScopes = await fs.readFile(uriScriptCreateScopes, "utf-8").catch(err=>console.log(err));
     createScopes = createScopes.replace(
       /`cocodoc`/g,
       "`" + config.mysqlDatabase + "`"
@@ -119,6 +122,7 @@ verifyConnection(connection)
   .then((msg) => {
     SUCCESS(msg);
     isCreated = true;
+    console.log(isCreated)
     return createDatabase(connection, config.scriptCreateDb);
   })
   .then((msg) => {
@@ -134,6 +138,7 @@ verifyConnection(connection)
     process.exit(0);
   })
   .catch(async (error) => {
+    console.log(error)
     if (isCreated) {
       let is = await dropDb(connection);
       is ? console.log(chalk.bgRedBright.whiteBright(`Drop database: ${config.mysqlDatabase}`)) : console.log(`No action.`)
